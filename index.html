@@ -6,97 +6,75 @@
 <title>NBA Game Ranker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #F5F4F0;
-    --surface: #ffffff;
-    --border: #e0deda;
-    --border-light: #ede9e3;
-    --text: #1a1a1a;
-    --text-2: #888780;
-    --text-3: #B4B2A9;
-    --amber: #BA7517;
-    --amber-light: #FAC775;
-    --amber-dark: #854F0B;
-    --silver: #888780;
-    --blue: #185FA5;
-    --blue-light: #E6F1FB;
-    --radius: 12px;
-    --radius-sm: 7px;
-    --mono: 'DM Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
+    --bg: #F5F4F0; --surface: #ffffff; --border: #e0deda; --border-light: #ede9e3;
+    --text: #1a1a1a; --text-2: #888780; --text-3: #B4B2A9;
+    --amber: #BA7517; --amber-dark: #854F0B; --silver: #888780;
+    --blue: #185FA5; --blue-light: #E6F1FB;
+    --radius: 12px; --radius-sm: 7px;
+    --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
   }
-
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1a1918;
-      --surface: #242220;
-      --border: #3a3835;
-      --border-light: #2e2c2a;
-      --text: #f0ede8;
-      --text-2: #888780;
-      --text-3: #5a5855;
-      --blue-light: #0c2440;
+      --bg: #1a1918; --surface: #242220; --border: #3a3835; --border-light: #2e2c2a;
+      --text: #f0ede8; --text-2: #888780; --text-3: #5a5855; --blue-light: #0c2440;
     }
   }
-
   html { font-size: 15px; }
   body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
-
-  .page { max-width: 560px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-
+  .page { max-width: 580px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
   .site-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--border); }
   .site-title { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--amber); letter-spacing: -0.5px; }
   .site-sub { font-size: 12px; color: var(--text-3); font-family: var(--mono); }
-
-  .tabs { display: flex; gap: 1px; margin-bottom: 1.5rem; background: var(--border); border-radius: var(--radius-sm); padding: 1px; overflow: hidden; }
-  .tab { flex: 1; padding: 9px 12px; font-size: 12px; font-weight: 500; font-family: var(--mono); text-align: center; cursor: pointer; color: var(--text-2); background: transparent; border: none; border-radius: calc(var(--radius-sm) - 1px); transition: all 0.15s; letter-spacing: 0.3px; }
+  .tabs { display: flex; gap: 1px; margin-bottom: 1.5rem; background: var(--border); border-radius: var(--radius-sm); padding: 1px; }
+  .tab { flex: 1; padding: 9px 8px; font-size: 12px; font-weight: 500; font-family: var(--mono); text-align: center; cursor: pointer; color: var(--text-2); background: transparent; border: none; border-radius: calc(var(--radius-sm) - 1px); transition: all 0.15s; letter-spacing: 0.3px; }
   .tab:hover { color: var(--text); }
   .tab.active { background: var(--surface); color: var(--text); }
-
+  /* Ranker */
   .matchup-progress { font-family: var(--mono); font-size: 11px; color: var(--text-3); text-align: center; margin-bottom: 1rem; letter-spacing: 0.5px; }
-
   .vs-wrap { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: start; margin-bottom: 1rem; }
   .team-btn { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px 14px; cursor: pointer; text-align: center; transition: all 0.12s; width: 100%; }
-  .team-btn:hover { border-color: var(--amber); background: var(--bg); transform: translateY(-1px); }
-  .team-btn:active { transform: translateY(0); }
+  .team-btn:hover { border-color: var(--amber); transform: translateY(-1px); }
   .team-btn img { width: 52px; height: 52px; object-fit: contain; display: block; margin: 0 auto 10px; }
   .team-btn .t-name { font-size: 12px; font-weight: 500; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
   .team-btn .t-rating { font-family: var(--mono); font-size: 11px; color: var(--amber); }
   .vs-mid { display: flex; align-items: center; justify-content: center; padding-top: 36px; font-family: var(--mono); font-size: 11px; color: var(--text-3); }
-
   .skip-wrap { text-align: center; margin-bottom: 1.5rem; }
   .skip-btn { font-size: 12px; color: var(--text-3); background: none; border: none; cursor: pointer; font-family: var(--sans); text-decoration: underline; text-underline-offset: 2px; }
-
-  .section-label { font-family: var(--mono); font-size: 10px; color: var(--text-3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.75rem; }
-
+  .section-label { font-family: var(--mono); font-size: 10px; color: var(--text-3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.75rem; margin-top: 1.5rem; }
   .rank-list { border-top: 0.5px solid var(--border-light); }
   .rank-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 0.5px solid var(--border-light); }
   .rank-num { font-family: var(--mono); font-size: 11px; color: var(--text-3); width: 20px; flex-shrink: 0; }
   .rank-logo { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
   .rank-name { font-size: 12px; color: var(--text); flex: 1; }
-  .rank-bar-wrap { width: 72px; flex-shrink: 0; }
+  .rank-bar-wrap { width: 80px; flex-shrink: 0; }
   .rank-bar-track { background: var(--border-light); border-radius: 2px; height: 3px; }
   .rank-bar-fill { height: 3px; border-radius: 2px; background: var(--amber); }
   .rank-elo { font-family: var(--mono); font-size: 11px; color: var(--text-3); width: 36px; text-align: right; flex-shrink: 0; }
-
-  .done-banner { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 1.25rem; display: flex; gap: 10px; align-items: center; }
+  .done-banner { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 1rem; display: flex; gap: 10px; align-items: center; }
   .done-text { flex: 1; font-size: 12px; color: var(--text-2); }
   .done-text strong { color: var(--text); font-weight: 500; display: block; margin-bottom: 2px; }
   .btn { padding: 8px 14px; font-size: 12px; font-family: var(--mono); border: 0.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; background: var(--surface); color: var(--text); letter-spacing: 0.3px; transition: all 0.12s; white-space: nowrap; }
   .btn:hover { background: var(--bg); border-color: var(--amber); }
   .btn-amber { background: var(--amber); color: #fff; border-color: var(--amber); }
   .btn-amber:hover { background: var(--amber-dark); border-color: var(--amber-dark); }
-
   .saved-note { font-family: var(--mono); font-size: 10px; color: var(--text-3); text-align: center; margin-top: 1rem; letter-spacing: 0.3px; }
-
+  /* Games */
+  .games-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .games-date-display { font-family: var(--mono); font-size: 11px; color: var(--text-3); flex: 1; }
+  .date-nav { display: flex; align-items: center; gap: 4px; }
+  .date-nav button { font-family: var(--mono); font-size: 12px; color: var(--text-2); background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 5px 10px; cursor: pointer; }
+  .date-nav button:hover { border-color: var(--amber); color: var(--text); }
+  .date-nav input[type="date"] { font-family: var(--mono); font-size: 11px; color: var(--text); background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 5px 8px; cursor: pointer; }
+  .tz-select { font-family: var(--mono); font-size: 11px; color: var(--text-2); background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 5px 8px; cursor: pointer; }
   .game-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; }
   .game-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
   .game-rank-num { font-family: var(--mono); font-size: 16px; font-weight: 500; }
   .rank-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-
+  .game-bonus { font-family: var(--mono); font-size: 10px; color: #993C1D; margin-left: auto; }
   .game-teams { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 6px; }
   .g-team { text-align: center; }
   .g-team img { width: 40px; height: 40px; object-fit: contain; display: block; margin: 0 auto 5px; }
@@ -106,37 +84,51 @@
   .g-at { font-size: 10px; color: var(--text-3); font-family: var(--mono); letter-spacing: 0.5px; }
   .g-time { font-size: 12px; font-weight: 500; color: var(--text); margin: 4px 0; }
   .g-combined { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--amber); margin-top: 4px; }
-  .g-badge { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 5px; margin-top: 4px; letter-spacing: 0.3px; }
+  .g-badge { display: inline-block; font-family: var(--mono); font-size: 10px; padding: 2px 8px; border-radius: 5px; margin-top: 4px; }
   .badge-lp { background: var(--bg); color: var(--text-3); border: 0.5px solid var(--border); }
   .badge-tv { background: var(--blue-light); color: var(--blue); }
-
-  .games-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-  .games-date { font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.5px; }
-  .refresh-btn { font-family: var(--mono); font-size: 11px; color: var(--text-3); background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: var(--radius-sm); }
-  .refresh-btn:hover { background: var(--border-light); color: var(--text); }
-
-  .loading { text-align: center; padding: 3rem 0; font-family: var(--mono); font-size: 12px; color: var(--text-3); letter-spacing: 0.5px; }
+  .chart-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; }
+  .chart-label { font-family: var(--mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.5px; margin-bottom: 10px; }
+  .chart-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; }
+  .legend-item { font-size: 10px; color: var(--text-2); font-family: var(--mono); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .loading { text-align: center; padding: 3rem 0; font-family: var(--mono); font-size: 12px; color: var(--text-3); letter-spacing: 0.5px; animation: pulse 1.5s ease-in-out infinite; }
   .no-games { text-align: center; padding: 3rem 0; font-size: 13px; color: var(--text-2); }
-
   .games-note { font-size: 11px; color: var(--text-3); text-align: center; margin-top: 1rem; font-family: var(--mono); }
-
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .loading { animation: pulse 1.5s ease-in-out infinite; }
+  /* Weights */
+  .weights-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .weights-section h3 { font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  .weight-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .weight-label { font-size: 13px; color: var(--text); flex: 1; }
+  .weight-sub { font-size: 11px; color: var(--text-3); display: block; margin-top: 1px; font-family: var(--mono); }
+  .weight-toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+  .weight-toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-track { position: absolute; inset: 0; background: var(--border); border-radius: 10px; cursor: pointer; transition: background 0.2s; }
+  .toggle-track::after { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.2s; }
+  input:checked + .toggle-track { background: var(--amber); }
+  input:checked + .toggle-track::after { transform: translateX(16px); }
+  .weight-input { font-family: var(--mono); font-size: 12px; color: var(--text); background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 5px 8px; width: 72px; text-align: right; }
+  .weight-input:focus { outline: none; border-color: var(--amber); }
+  .weight-input:disabled { opacity: 0.4; }
+  .tz-row { display: flex; align-items: center; gap: 12px; }
+  .tz-big-select { font-family: var(--mono); font-size: 12px; color: var(--text); background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 7px 10px; width: 100%; cursor: pointer; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
 </style>
 </head>
 <body>
 <div class="page">
-
   <header class="site-header">
     <div class="site-title">NBA // GAME RANKER</div>
     <div class="site-sub">powered by your picks</div>
   </header>
 
   <div class="tabs">
-    <button class="tab active" id="tab-ranker" onclick="switchTab('ranker')">my rankings</button>
-    <button class="tab" id="tab-games" onclick="switchTab('games')">tonight's games</button>
+    <button class="tab active" id="tab-ranker" onclick="switchTab('ranker')">elo rankings</button>
+    <button class="tab" id="tab-games"  onclick="switchTab('games')">games</button>
+    <button class="tab" id="tab-weights" onclick="switchTab('weights')">weights</button>
   </div>
 
+  <!-- RANKER TAB -->
   <div id="view-ranker">
     <div class="matchup-progress" id="progress"></div>
     <div class="vs-wrap" id="vs-wrap">
@@ -158,25 +150,113 @@
     <div id="done-banner" style="display:none;" class="done-banner">
       <div class="done-text">
         <strong>round complete</strong>
-        ratings saved — run another round to refine
+        run another round to refine your ratings
       </div>
       <button class="btn" onclick="newRound()">↺ again</button>
       <button class="btn btn-amber" onclick="switchTab('games')">games ↗</button>
     </div>
-    <div class="section-label" id="rankings-label" style="display:none;">your rankings</div>
+    <div class="section-label" id="rankings-label" style="display:none;">your team rankings</div>
     <div class="rank-list" id="rankings"></div>
     <div class="saved-note" id="saved-note"></div>
   </div>
 
+  <!-- GAMES TAB -->
   <div id="view-games" style="display:none;">
-    <div class="games-header">
-      <div class="games-date" id="games-date"></div>
-      <button class="refresh-btn" onclick="loadGames()">↻ refresh</button>
+    <div class="games-toolbar">
+      <div class="date-nav">
+        <button onclick="shiftDate(-1)">←</button>
+        <input type="date" id="date-picker" onchange="onDatePick()"/>
+        <button onclick="shiftDate(1)">→</button>
+        <button onclick="goToday()">today</button>
+      </div>
+      <select class="tz-select" id="tz-select" onchange="loadGames()">
+        <option value="ET">ET</option>
+        <option value="CT">CT</option>
+        <option value="MT">MT</option>
+        <option value="PT">PT</option>
+      </select>
     </div>
     <div id="games-content"><div class="loading">loading games...</div></div>
     <div class="games-note" id="games-note"></div>
   </div>
 
+  <!-- WEIGHTS TAB -->
+  <div id="view-weights" style="display:none;">
+    <div class="weights-section">
+      <h3>playoff leverage</h3>
+      <div class="weight-row">
+        <div class="weight-label">
+          Enable leverage bonuses
+          <span class="weight-sub">adds bonus score for high-stakes playoff games</span>
+        </div>
+        <label class="weight-toggle">
+          <input type="checkbox" id="w-leverage-on" checked onchange="saveWeights()"/>
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="weight-row">
+        <div class="weight-label">
+          Elimination game
+          <span class="weight-sub">one team one win from elimination</span>
+        </div>
+        <input type="number" class="weight-input" id="w-elim" value="300" onchange="saveWeights()"/>
+      </div>
+      <div class="weight-row">
+        <div class="weight-label">
+          Tied series
+          <span class="weight-sub">1-1, 2-2, or 3-3</span>
+        </div>
+        <input type="number" class="weight-input" id="w-tied" value="200" onchange="saveWeights()"/>
+      </div>
+      <div class="weight-row">
+        <div class="weight-label">
+          Game 1
+          <span class="weight-sub">0-0 series opener</span>
+        </div>
+        <input type="number" class="weight-input" id="w-game1" value="100" onchange="saveWeights()"/>
+      </div>
+    </div>
+
+    <div class="weights-section">
+      <h3>broadcast bonus</h3>
+      <div class="weight-row">
+        <div class="weight-label">
+          National TV bonus
+          <span class="weight-sub">ABC, ESPN, NBC, Prime Video, Peacock</span>
+        </div>
+        <label class="weight-toggle">
+          <input type="checkbox" id="w-tv-on" onchange="saveWeights()"/>
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="weight-row">
+        <div class="weight-label">
+          Bonus amount
+        </div>
+        <input type="number" class="weight-input" id="w-tv-bonus" value="100" onchange="saveWeights()"/>
+      </div>
+    </div>
+
+    <div class="weights-section">
+      <h3>time zone filter</h3>
+      <div class="weight-row">
+        <div class="weight-label">
+          Hide games that tip off before
+          <span class="weight-sub">in your selected time zone</span>
+        </div>
+        <label class="weight-toggle">
+          <input type="checkbox" id="w-time-filter-on" onchange="saveWeights()"/>
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="weight-row">
+        <div class="weight-label">Earliest tip-off to show</div>
+        <input type="time" class="weight-input" id="w-min-time" value="18:00" style="width:90px;" onchange="saveWeights()"/>
+      </div>
+    </div>
+
+    <button class="btn btn-amber" style="width:100%;margin-top:8px;" onclick="switchTab('games');loadGames();">apply & see games →</button>
+  </div>
 </div>
 
 <script>
@@ -213,227 +293,392 @@ var TEAMS = [
   {name:"Sacramento Kings",abbr:"SAC",espn:"sac"},
 ];
 
-function logoUrl(espn) {
-  return "https://a.espncdn.com/i/teamlogos/nba/500/" + espn + ".png";
-}
+// Clearly differentiated: gold, silver, bronze, then pastels avoiding warm tones
+var DOT_COLORS = [
+  "#BA7517", // 1 gold
+  "#888780", // 2 silver
+  "#854F0B", // 3 bronze
+  "#4E9FC4", // 4 steel blue
+  "#5BAF7A", // 5 mint green
+  "#7B68C8", // 6 periwinkle
+  "#C25B8A", // 7 raspberry
+  "#3EAAA0", // 8 teal
+  "#6B9E5E", // 9 sage
+  "#B05CB0", // 10 violet
+  "#5B8FC4", // 11 sky blue
+  "#C46E6E", // 12 dusty rose
+];
 
-var K = 32;
-var ratings = {};
-var matchups = [];
-var current = 0;
-var DOT_COLORS = ["#BA7517","#888780","#854F0B","#7BA7C7","#8FBA8F","#C7A07B","#A78FC7","#C78FA0","#7BAFC0","#C0B87B","#A0A0A0","#B58FAF"];
+function logoUrl(espn) { return "https://a.espncdn.com/i/teamlogos/nba/500/"+espn+".png"; }
+
+// ELO
+var K = 32, ratings = {}, matchups = [], current = 0;
 
 function loadRatings() {
-  try {
-    var s = localStorage.getItem('nba_elo_v2');
-    if (s) return JSON.parse(s);
-  } catch(e) {}
+  try { var s = localStorage.getItem('nba_elo_v3'); if(s) return JSON.parse(s); } catch(e){}
   return null;
 }
-
 function saveRatings() {
-  try { localStorage.setItem('nba_elo_v2', JSON.stringify(ratings)); } catch(e) {}
+  try { localStorage.setItem('nba_elo_v3', JSON.stringify(ratings)); } catch(e){}
 }
-
 function initRatings() {
   var saved = loadRatings();
-  if (saved) {
-    ratings = saved;
-    document.getElementById('saved-note').textContent = '↑ continuing from your saved ratings';
-  } else {
-    TEAMS.forEach(function(t) { ratings[t.abbr] = 1200; });
-  }
+  if (saved) { ratings = saved; document.getElementById('saved-note').textContent = '↑ continuing from your saved ratings'; }
+  else { TEAMS.forEach(function(t){ ratings[t.abbr]=1200; }); }
 }
-
 function buildMatchups() {
   matchups = [];
-  for (var i = 0; i < TEAMS.length; i++)
-    for (var j = i+1; j < TEAMS.length; j++)
-      matchups.push([i,j]);
-  for (var k = matchups.length-1; k > 0; k--) {
-    var r = Math.floor(Math.random()*(k+1));
-    var tmp = matchups[k]; matchups[k] = matchups[r]; matchups[r] = tmp;
-  }
-  current = 0;
+  for(var i=0;i<TEAMS.length;i++) for(var j=i+1;j<TEAMS.length;j++) matchups.push([i,j]);
+  for(var k=matchups.length-1;k>0;k--){ var r=Math.floor(Math.random()*(k+1)),tmp=matchups[k];matchups[k]=matchups[r];matchups[r]=tmp; }
+  current=0;
 }
-
-function expected(ra, rb) { return 1/(1+Math.pow(10,(rb-ra)/400)); }
-
-function updateElo(wa, la) {
-  var ra = ratings[wa], rb = ratings[la], ea = expected(ra,rb);
-  ratings[wa] = Math.round(ra + K*(1-ea));
-  ratings[la] = Math.round(rb + K*(0-(1-ea)));
+function expected(ra,rb){return 1/(1+Math.pow(10,(rb-ra)/400));}
+function updateElo(wa,la){
+  var ra=ratings[wa],rb=ratings[la],ea=expected(ra,rb);
+  ratings[wa]=Math.round(ra+K*(1-ea)); ratings[la]=Math.round(rb+K*(0-(1-ea)));
   saveRatings();
 }
-
-function pick(side) {
-  var pair = matchups[current];
-  if (side===0) updateElo(TEAMS[pair[0]].abbr, TEAMS[pair[1]].abbr);
-  else          updateElo(TEAMS[pair[1]].abbr, TEAMS[pair[0]].abbr);
-  current++;
-  render();
+function pick(side){
+  var p=matchups[current];
+  side===0?updateElo(TEAMS[p[0]].abbr,TEAMS[p[1]].abbr):updateElo(TEAMS[p[1]].abbr,TEAMS[p[0]].abbr);
+  current++; render();
 }
-
-function skip() { current++; render(); }
-
-function newRound() {
-  document.getElementById('done-banner').style.display = 'none';
-  document.getElementById('vs-wrap').style.display = 'grid';
-  document.querySelector('.skip-wrap').style.display = 'block';
-  buildMatchups();
-  render();
+function skip(){ current++; render(); }
+function newRound(){
+  document.getElementById('done-banner').style.display='none';
+  document.getElementById('vs-wrap').style.display='grid';
+  document.querySelector('.skip-wrap').style.display='block';
+  buildMatchups(); render();
 }
-
-function render() {
+function render(){
   renderRankings();
-  var done = current >= matchups.length;
-  document.getElementById('done-banner').style.display = done ? 'flex' : 'none';
-  document.getElementById('vs-wrap').style.display = done ? 'none' : 'grid';
-  document.querySelector('.skip-wrap').style.display = done ? 'none' : 'block';
-  document.getElementById('rankings-label').style.display = 'block';
-  if (done) {
-    document.getElementById('progress').textContent = '';
-    return;
-  }
-  var pair = matchups[current];
-  var a = TEAMS[pair[0]], b = TEAMS[pair[1]];
-  document.getElementById('progress').textContent = 'matchup ' + (current+1) + ' / 435';
-  document.getElementById('logo-a').src = logoUrl(a.espn);
-  document.getElementById('logo-a').alt = a.abbr;
-  document.getElementById('name-a').textContent = a.name;
-  document.getElementById('rating-a').textContent = ratings[a.abbr];
-  document.getElementById('logo-b').src = logoUrl(b.espn);
-  document.getElementById('logo-b').alt = b.abbr;
-  document.getElementById('name-b').textContent = b.name;
-  document.getElementById('rating-b').textContent = ratings[b.abbr];
+  var done=current>=matchups.length;
+  document.getElementById('done-banner').style.display=done?'flex':'none';
+  document.getElementById('vs-wrap').style.display=done?'none':'grid';
+  document.querySelector('.skip-wrap').style.display=done?'none':'block';
+  document.getElementById('rankings-label').style.display='block';
+  if(done){document.getElementById('progress').textContent='';return;}
+  var p=matchups[current],a=TEAMS[p[0]],b=TEAMS[p[1]];
+  document.getElementById('progress').textContent='matchup '+(current+1)+' / 435';
+  document.getElementById('logo-a').src=logoUrl(a.espn); document.getElementById('logo-a').alt=a.abbr;
+  document.getElementById('name-a').textContent=a.name; document.getElementById('rating-a').textContent=ratings[a.abbr];
+  document.getElementById('logo-b').src=logoUrl(b.espn); document.getElementById('logo-b').alt=b.abbr;
+  document.getElementById('name-b').textContent=b.name; document.getElementById('rating-b').textContent=ratings[b.abbr];
 }
-
-function renderRankings() {
-  var sorted = TEAMS.slice().sort(function(a,b){return ratings[b.abbr]-ratings[a.abbr];});
-  var max = ratings[sorted[0].abbr], min = ratings[sorted[sorted.length-1].abbr];
-  document.getElementById('rankings').innerHTML = sorted.map(function(t,i){
-    var pct = max===min ? 100 : Math.round(((ratings[t.abbr]-min)/(max-min))*100);
-    return '<div class="rank-row">' +
-      '<div class="rank-num">' + (i+1) + '</div>' +
-      '<img class="rank-logo" src="' + logoUrl(t.espn) + '" alt="' + t.abbr + '"/>' +
-      '<div class="rank-name">' + t.name + '</div>' +
-      '<div class="rank-bar-wrap"><div class="rank-bar-track"><div class="rank-bar-fill" style="width:'+pct+'%"></div></div></div>' +
-      '<div class="rank-elo">' + ratings[t.abbr] + '</div>' +
+function renderRankings(){
+  var sorted=TEAMS.slice().sort(function(a,b){return ratings[b.abbr]-ratings[a.abbr];});
+  var max=ratings[sorted[0].abbr],min=ratings[sorted[sorted.length-1].abbr];
+  document.getElementById('rankings').innerHTML=sorted.map(function(t,i){
+    var pct=max===min?100:Math.round(((ratings[t.abbr]-min)/(max-min))*100);
+    return '<div class="rank-row">'+
+      '<div class="rank-num">'+(i+1)+'</div>'+
+      '<img class="rank-logo" src="'+logoUrl(t.espn)+'" alt="'+t.abbr+'"/>'+
+      '<div class="rank-name">'+t.name+'</div>'+
+      '<div class="rank-bar-wrap"><div class="rank-bar-track"><div class="rank-bar-fill" style="width:'+pct+'%"></div></div></div>'+
+      '<div class="rank-elo">'+ratings[t.abbr]+'</div>'+
     '</div>';
   }).join('');
 }
 
-function switchTab(tab) {
-  document.getElementById('tab-ranker').className = 'tab' + (tab==='ranker'?' active':'');
-  document.getElementById('tab-games').className  = 'tab' + (tab==='games' ?' active':'');
-  document.getElementById('view-ranker').style.display = tab==='ranker' ? '' : 'none';
-  document.getElementById('view-games').style.display  = tab==='games'  ? '' : 'none';
-  if (tab==='games') loadGames();
+// WEIGHTS
+var weights = { leverageOn:true, elim:300, tied:200, game1:100, tvOn:false, tvBonus:100, timeFilterOn:false, minTime:'18:00' };
+
+function loadWeights(){
+  try { var s=localStorage.getItem('nba_weights_v1'); if(s) return JSON.parse(s); } catch(e){}
+  return null;
+}
+function saveWeights(){
+  weights.leverageOn = document.getElementById('w-leverage-on').checked;
+  weights.elim = parseInt(document.getElementById('w-elim').value)||0;
+  weights.tied = parseInt(document.getElementById('w-tied').value)||0;
+  weights.game1 = parseInt(document.getElementById('w-game1').value)||0;
+  weights.tvOn = document.getElementById('w-tv-on').checked;
+  weights.tvBonus = parseInt(document.getElementById('w-tv-bonus').value)||0;
+  weights.timeFilterOn = document.getElementById('w-time-filter-on').checked;
+  weights.minTime = document.getElementById('w-min-time').value;
+  try { localStorage.setItem('nba_weights_v1', JSON.stringify(weights)); } catch(e){}
+  updateWeightInputStates();
+}
+function updateWeightInputStates(){
+  var leverOn = document.getElementById('w-leverage-on').checked;
+  ['w-elim','w-tied','w-game1'].forEach(function(id){ document.getElementById(id).disabled=!leverOn; });
+  var tvOn = document.getElementById('w-tv-on').checked;
+  document.getElementById('w-tv-bonus').disabled=!tvOn;
+  var tfOn = document.getElementById('w-time-filter-on').checked;
+  document.getElementById('w-min-time').disabled=!tfOn;
+}
+function initWeights(){
+  var saved=loadWeights();
+  if(saved) weights=Object.assign(weights,saved);
+  document.getElementById('w-leverage-on').checked=weights.leverageOn;
+  document.getElementById('w-elim').value=weights.elim;
+  document.getElementById('w-tied').value=weights.tied;
+  document.getElementById('w-game1').value=weights.game1;
+  document.getElementById('w-tv-on').checked=weights.tvOn;
+  document.getElementById('w-tv-bonus').value=weights.tvBonus;
+  document.getElementById('w-time-filter-on').checked=weights.timeFilterOn;
+  document.getElementById('w-min-time').value=weights.minTime;
+  updateWeightInputStates();
 }
 
-function getEloByName(name) {
-  for (var i=0; i<TEAMS.length; i++) {
-    var t = TEAMS[i];
-    if (name===t.name || name.includes(t.name.split(' ').pop())) return {elo:ratings[t.abbr]||1200, abbr:t.abbr, espn:t.espn};
+// DATE
+var currentDate = new Date();
+
+function dateToString(d){
+  return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+}
+function dateToInputVal(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function shiftDate(delta){
+  currentDate.setDate(currentDate.getDate()+delta);
+  document.getElementById('date-picker').value=dateToInputVal(currentDate);
+  loadGames();
+}
+function goToday(){ currentDate=new Date(); document.getElementById('date-picker').value=dateToInputVal(currentDate); loadGames(); }
+function onDatePick(){
+  var v=document.getElementById('date-picker').value;
+  if(v){ var parts=v.split('-'); currentDate=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2])); loadGames(); }
+}
+
+// TZ offset helpers
+function getTZOffset(tzCode){
+  var now=new Date();
+  var utcOffset=now.getTimezoneOffset(); // local offset
+  // We'll convert game UTC times to display string in chosen TZ
+  var offsets={ET:-5,CT:-6,MT:-7,PT:-8};
+  // Adjust for DST (rough: March-Nov)
+  var month=now.getMonth();
+  var dst=(month>=2&&month<=10);
+  var base=offsets[tzCode]||-5;
+  return dst?base+1:base;
+}
+function formatGameTime(utcDate, tzCode){
+  var tzOff=getTZOffset(tzCode);
+  var ms=utcDate.getTime()+(tzOff*3600000)+(utcDate.getTimezoneOffset()*60000);
+  var d=new Date(ms);
+  var h=d.getHours()%12||12,min=d.getMinutes(),ap=d.getHours()>=12?'PM':'AM';
+  return h+':'+(min<10?'0':'')+min+' '+ap+' '+tzCode;
+}
+function gameHour(utcDate, tzCode){
+  var tzOff=getTZOffset(tzCode);
+  var ms=utcDate.getTime()+(tzOff*3600000)+(utcDate.getTimezoneOffset()*60000);
+  return new Date(ms).getHours()+(new Date(ms).getMinutes()/60);
+}
+
+// ELO lookup
+function getTeamData(name){
+  for(var i=0;i<TEAMS.length;i++){
+    var t=TEAMS[i];
+    if(name===t.name||name.includes(t.name.split(' ').pop())) return {elo:ratings[t.abbr]||1200,abbr:t.abbr,espn:t.espn};
   }
-  return {elo:1200, abbr:name.substring(0,3).toUpperCase(), espn:''};
+  return {elo:1200,abbr:name.substring(0,3).toUpperCase(),espn:''};
 }
 
-var gamesLoaded = false;
+// Scatter chart
+var scatterChart = null;
 
-function loadGames() {
-  var el = document.getElementById('games-content');
-  el.innerHTML = '<div class="loading">loading games...</div>';
-  document.getElementById('games-note').textContent = '';
+function buildScatterChart(games){
+  var el=document.getElementById('scatter-canvas');
+  if(!el) return;
+  if(scatterChart){ scatterChart.destroy(); scatterChart=null; }
 
-  var now = new Date();
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  document.getElementById('games-date').textContent =
-    days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
+  var AXIS_MIN=900,AXIS_MAX=1550;
+  var REAL_MIN=1920,REAL_MAX=2931,REAL_RANGE=REAL_MAX-REAL_MIN;
+  var MEDIAN=1200;
 
-  var y = now.getFullYear();
-  var m = String(now.getMonth()+1).padStart(2,'0');
-  var d = String(now.getDate()).padStart(2,'0');
+  var qBounds=[
+    REAL_MIN+REAL_RANGE*0.2,
+    REAL_MIN+REAL_RANGE*0.4,
+    REAL_MIN+REAL_RANGE*0.6,
+    REAL_MIN+REAL_RANGE*0.8,
+  ];
 
-  fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=' + y+m+d)
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      var events = data.events || [];
-      if (!events.length) {
-        el.innerHTML = '<div class="no-games">no games scheduled today</div>';
-        return;
+  function linePts(S){
+    var pts=[];
+    var ay=S-AXIS_MIN; if(ay>=AXIS_MIN&&ay<=AXIS_MAX) pts.push({x:AXIS_MIN,y:ay});
+    ay=S-AXIS_MAX; if(ay>=AXIS_MIN&&ay<=AXIS_MAX) pts.push({x:AXIS_MAX,y:ay});
+    var ax=S-AXIS_MIN; if(ax>AXIS_MIN&&ax<AXIS_MAX) pts.push({x:ax,y:AXIS_MIN});
+    ax=S-AXIS_MAX; if(ax>AXIS_MIN&&ax<AXIS_MAX) pts.push({x:ax,y:AXIS_MAX});
+    pts.sort(function(a,b){return a.x-b.x;}); return pts;
+  }
+
+  function lineDS(pts,color,dash,w){
+    return {type:'scatter',data:pts,borderColor:color,backgroundColor:'transparent',
+      pointRadius:0,pointHoverRadius:0,showLine:true,borderDash:dash,borderWidth:w,label:'_'};
+  }
+
+  var gameDots=games.map(function(g,i){
+    return {type:'scatter',data:[{x:g.homeElo,y:g.awayElo}],
+      backgroundColor:g.dotColor,borderColor:g.dotColor,
+      pointBackgroundColor:g.dotColor,pointBorderColor:g.dotColor,
+      pointRadius:7,pointHoverRadius:9,showLine:false,label:'_'};
+  });
+
+  var lines=[
+    lineDS([{x:AXIS_MIN,y:AXIS_MIN},{x:AXIS_MAX,y:AXIS_MAX}],'rgba(100,100,100,0.5)',[7,3],1.5),
+    lineDS([{x:MEDIAN,y:AXIS_MIN},{x:MEDIAN,y:AXIS_MAX}],'rgba(100,100,100,0.3)',[4,4],1),
+    lineDS([{x:AXIS_MIN,y:MEDIAN},{x:AXIS_MAX,y:MEDIAN}],'rgba(100,100,100,0.3)',[4,4],1),
+  ].concat(qBounds.map(function(S){return lineDS(linePts(S),'rgba(186,117,23,0.35)',[3,4],1);}));
+
+  scatterChart=new Chart(el,{
+    type:'scatter',
+    data:{datasets:gameDots.concat(lines)},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){
+        var g=games[c.datasetIndex]; if(!g) return '';
+        return g.awayAbbr+' @ '+g.homeAbbr+' ('+c.parsed.x+'/'+c.parsed.y+')';
+      }}}},
+      scales:{
+        x:{type:'linear',min:AXIS_MIN,max:AXIS_MAX,
+          title:{display:true,text:'home elo',color:'#888780',font:{size:10}},
+          grid:{color:'rgba(180,178,169,0.25)'},ticks:{color:'#888780',font:{size:10}}},
+        y:{type:'linear',min:AXIS_MIN,max:AXIS_MAX,
+          title:{display:true,text:'away elo',color:'#888780',font:{size:10}},
+          grid:{color:'rgba(180,178,169,0.25)'},ticks:{color:'#888780',font:{size:10}}}
       }
-      var games = events.map(function(ev) {
-        var comp = ev.competitions[0];
-        var home = comp.competitors[0];
-        var away = comp.competitors[1];
-        var hd = getEloByName(home.team.displayName);
-        var ad = getEloByName(away.team.displayName);
-        var combined = hd.elo + ad.elo;
-        var d2 = new Date(ev.date);
-        var h = d2.getHours()%12||12, min = d2.getMinutes(), ap = d2.getHours()>=12?'PM':'AM';
-        var watch = 'League Pass';
-        if (comp.broadcasts&&comp.broadcasts.length) {
-          var ns = comp.broadcasts[0].names||[];
-          for (var i=0;i<ns.length;i++) {
-            if (['ABC','ESPN','ESPN2','NBC','Prime Video','Peacock'].indexOf(ns[i])>=0){watch=ns[i];break;}
-          }
+    }
+  });
+}
+
+// LOAD GAMES
+function loadGames(){
+  var el=document.getElementById('games-content');
+  el.innerHTML='<div class="loading">loading games...</div>';
+  document.getElementById('games-note').textContent='';
+  if(scatterChart){scatterChart.destroy();scatterChart=null;}
+
+  document.getElementById('date-picker').value=dateToInputVal(currentDate);
+
+  fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates='+dateToString(currentDate))
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var events=data.events||[];
+      var tz=document.getElementById('tz-select').value;
+
+      if(!events.length){el.innerHTML='<div class="no-games">no games on this date</div>';return;}
+
+      // Build games
+      var games=events.map(function(ev){
+        var comp=ev.competitions[0];
+        var home=comp.competitors[0],away=comp.competitors[1];
+        var hd=getTeamData(home.team.displayName),ad=getTeamData(away.team.displayName);
+        var combined=hd.elo+ad.elo;
+        var utcDate=new Date(ev.date);
+        var timeStr=formatGameTime(utcDate,tz);
+        var hourVal=gameHour(utcDate,tz);
+
+        var watch='League Pass';
+        if(comp.broadcasts&&comp.broadcasts.length){
+          var ns=comp.broadcasts[0].names||[];
+          for(var i=0;i<ns.length;i++){if(['ABC','ESPN','ESPN2','NBC','Prime Video','Peacock'].indexOf(ns[i])>=0){watch=ns[i];break;}}
         }
+        var isNationalTV=(watch!=='League Pass');
+
+        // Series / leverage
+        var leverageBonus=0,leverageLabel='';
+        var series=comp.series;
+        if(series&&weights.leverageOn){
+          var hWins=0,aWins=0;
+          (series.competitors||[]).forEach(function(c){
+            if(c.id===home.team.id)hWins=c.wins||0;
+            if(c.id===away.team.id)aWins=c.wins||0;
+          });
+          if(hWins===3||aWins===3){leverageBonus=weights.elim;leverageLabel='elimination';}
+          else if(hWins===aWins&&hWins>0){leverageBonus=weights.tied;leverageLabel='tied '+hWins+'-'+aWins;}
+          else if(hWins+aWins===0){leverageBonus=weights.game1;leverageLabel='game 1';}
+        }
+
+        var tvBonus=(isNationalTV&&weights.tvOn)?weights.tvBonus:0;
+        var score=combined+leverageBonus+tvBonus+Math.random()*10;
+
         return {
-          homeAbbr:hd.abbr, awayAbbr:ad.abbr,
-          homeEspn:hd.espn, awayEspn:ad.espn,
-          homeLogo:home.team.logo, awayLogo:away.team.logo,
-          homeElo:hd.elo, awayElo:ad.elo, combined:combined,
-          time: h+':'+(min<10?'0':'')+min+' '+ap+' ET',
-          watch:watch, score:combined+Math.random()*10
+          homeAbbr:hd.abbr,awayAbbr:ad.abbr,
+          homeEspn:hd.espn,awayEspn:ad.espn,
+          homeLogo:home.team.logo,awayLogo:away.team.logo,
+          homeElo:hd.elo,awayElo:ad.elo,combined:combined,
+          time:timeStr,hourVal:hourVal,
+          watch:watch,isNationalTV:isNationalTV,
+          leverageBonus:leverageBonus,leverageLabel:leverageLabel,
+          tvBonus:tvBonus,score:score
         };
       });
+
+      // Time filter
+      if(weights.timeFilterOn){
+        var minH=parseInt(weights.minTime.split(':')[0])+(parseInt(weights.minTime.split(':')[1])/60);
+        games=games.filter(function(g){return g.hourVal>=minH;});
+      }
+
+      if(!games.length){el.innerHTML='<div class="no-games">no games match your filters</div>';return;}
+
       games.sort(function(a,b){return b.score-a.score;});
-      el.innerHTML = games.map(function(g,i){
-        var rank = i+1;
-        var rankColor = rank===1?'#BA7517':rank===2?'#888780':rank===3?'#854F0B':'var(--text-3)';
-        var dotColor = DOT_COLORS[i%DOT_COLORS.length];
-        var badge = g.watch==='League Pass'
-          ? '<span class="g-badge badge-lp">League Pass</span>'
-          : '<span class="g-badge badge-tv">'+g.watch+'</span>';
-        var aLogo = g.awayLogo || logoUrl(g.awayEspn);
-        var hLogo = g.homeLogo || logoUrl(g.homeEspn);
-        return '<div class="game-card">' +
-          '<div class="game-card-header">' +
-            '<span class="rank-dot" style="background:'+dotColor+'"></span>' +
-            '<span class="game-rank-num" style="color:'+rankColor+'">#'+rank+'</span>' +
-          '</div>' +
-          '<div class="game-teams">' +
-            '<div class="g-team">' +
-              '<img src="'+aLogo+'" alt="'+g.awayAbbr+'"/>' +
-              '<div class="g-abbr">'+g.awayAbbr+'</div>' +
-              '<div class="g-elo">'+g.awayElo+'</div>' +
-            '</div>' +
-            '<div class="g-mid">' +
-              '<div class="g-at">at</div>' +
-              '<div class="g-time">'+g.time+'</div>' +
-              badge +
-              '<div class="g-combined">'+g.combined+'</div>' +
-            '</div>' +
-            '<div class="g-team">' +
-              '<img src="'+hLogo+'" alt="'+g.homeAbbr+'"/>' +
-              '<div class="g-abbr">'+g.homeAbbr+'</div>' +
-              '<div class="g-elo">'+g.homeElo+'</div>' +
-            '</div>' +
-          '</div>' +
+      games.forEach(function(g,i){g.dotColor=DOT_COLORS[i%DOT_COLORS.length];});
+
+      // Render cards
+      var html=games.map(function(g,i){
+        var rank=i+1;
+        var rankColor=rank===1?'#BA7517':rank===2?'#888780':rank===3?'#854F0B':'var(--text-3)';
+        var badge=g.isNationalTV
+          ?'<span class="g-badge badge-tv">'+g.watch+'</span>'
+          :'<span class="g-badge badge-lp">League Pass</span>';
+        var bonusHtml='';
+        if(g.leverageBonus>0)bonusHtml+='<span class="game-bonus">+'+g.leverageBonus+' '+g.leverageLabel+'</span>';
+        if(g.tvBonus>0)bonusHtml+='<span class="game-bonus" style="margin-left:6px">+'+g.tvBonus+' national tv</span>';
+        var aLogo=g.awayLogo||logoUrl(g.awayEspn);
+        var hLogo=g.homeLogo||logoUrl(g.homeEspn);
+        return '<div class="game-card">'+
+          '<div class="game-card-header">'+
+            '<span class="rank-dot" style="background:'+g.dotColor+'"></span>'+
+            '<span class="game-rank-num" style="color:'+rankColor+'">#'+rank+'</span>'+
+            bonusHtml+
+          '</div>'+
+          '<div class="game-teams">'+
+            '<div class="g-team"><img src="'+aLogo+'" alt="'+g.awayAbbr+'"/><div class="g-abbr">'+g.awayAbbr+'</div><div class="g-elo">'+g.awayElo+'</div></div>'+
+            '<div class="g-mid"><div class="g-at">at</div><div class="g-time">'+g.time+'</div>'+badge+'<div class="g-combined">'+g.combined+'</div></div>'+
+            '<div class="g-team"><img src="'+hLogo+'" alt="'+g.homeAbbr+'"/><div class="g-abbr">'+g.homeAbbr+'</div><div class="g-elo">'+g.homeElo+'</div></div>'+
+          '</div>'+
         '</div>';
       }).join('');
-      document.getElementById('games-note').textContent = 'ranked by your elo ratings';
+
+      // Scatter chart card
+      var legendHtml=games.map(function(g,i){
+        return '<div class="legend-item"><span class="legend-dot" style="background:'+g.dotColor+'"></span>'+(i+1)+'. '+g.awayAbbr+' @ '+g.homeAbbr+'</div>';
+      }).join('');
+
+      html+='<div class="chart-card">'+
+        '<div class="chart-label">matchup map</div>'+
+        '<div style="position:relative;height:300px;"><canvas id="scatter-canvas"></canvas></div>'+
+        '<div class="chart-legend">'+legendHtml+'</div>'+
+      '</div>';
+
+      el.innerHTML=html;
+      document.getElementById('games-note').textContent='ranked by your elo ratings';
+
+      // Build chart after DOM update
+      setTimeout(function(){ buildScatterChart(games); },50);
     })
     .catch(function(){
-      el.innerHTML = '<div class="no-games">couldn\'t load games — check back later</div>';
+      el.innerHTML='<div class="no-games">couldn\'t load games — try again later</div>';
     });
 }
 
+// TABS
+function switchTab(tab){
+  ['ranker','games','weights'].forEach(function(t){
+    document.getElementById('tab-'+t).className='tab'+(t===tab?' active':'');
+    document.getElementById('view-'+t).style.display=t===tab?'':'none';
+  });
+  if(tab==='games') loadGames();
+}
+
+// INIT
 initRatings();
+initWeights();
 buildMatchups();
 render();
+document.getElementById('date-picker').value=dateToInputVal(currentDate);
 </script>
 </body>
 </html>
