@@ -54,6 +54,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .rank-bar-track{background:var(--border-light);border-radius:2px;height:3px}
 .rank-bar-fill{height:3px;border-radius:2px;background:var(--amber)}
 .rank-elo{font-family:var(--mono);font-size:11px;color:var(--text-3);width:36px;text-align:right;flex-shrink:0}
+.quintile-divider{display:block;height:2px;background:#3B6D11;opacity:.55;margin:0;border:none}
 .done-banner{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:1rem;display:flex;gap:10px;align-items:center}
 .done-text{flex:1;font-size:12px;color:var(--text-2)}
 .done-text strong{color:var(--text);font-weight:500;display:block;margin-bottom:2px}
@@ -176,7 +177,10 @@ input:checked+.toggle-track::after{transform:translateX(16px)}
   </div>
   <div class="rankings-header" id="rankings-header" style="display:none">
     <div class="section-label">your team rankings</div>
-    <button class="btn btn-ghost" onclick="confirmReset()">reset ratings</button>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="btn btn-ghost" onclick="rankByRecord()" title="Set ratings from current season win %">by record</button>
+      <button class="btn btn-ghost" onclick="confirmReset()">reset to 1200</button>
+    </div>
   </div>
   <div class="rank-list" id="rankings"></div>
   <div class="saved-note" id="saved-note"></div>
@@ -474,16 +478,61 @@ function render(){
 function renderRankings(){
   var sorted=TEAMS.slice().sort(function(a,b){return ratings[b.abbr]-ratings[a.abbr];});
   var mx=ratings[sorted[0].abbr],mn=ratings[sorted[sorted.length-1].abbr];
-  document.getElementById('rankings').innerHTML=sorted.map(function(t,i){
+  // Insert a green divider after every 6th team (quintile boundaries: after #6, #12, #18, #24)
+  var html='';
+  sorted.forEach(function(t,i){
     var pct=mx===mn?100:Math.round(((ratings[t.abbr]-mn)/(mx-mn))*100);
-    return'<div class="rank-row">'+
+    html+='<div class="rank-row">'+
       '<div class="rank-num">'+(i+1)+'</div>'+
       '<img class="rank-logo" src="'+logo(t.espn)+'" alt="'+t.abbr+'"/>'+
       '<div class="rank-name">'+t.name+'</div>'+
       '<div class="rank-bar-wrap"><div class="rank-bar-track"><div class="rank-bar-fill" style="width:'+pct+'%"></div></div></div>'+
       '<div class="rank-elo">'+ratings[t.abbr]+'</div>'+
     '</div>';
-  }).join('');
+    // After positions 6, 12, 18, 24 (0-indexed: 5, 11, 17, 23) insert divider
+    if(i===5||i===11||i===17||i===23){
+      html+='<hr class="quintile-divider"/>';
+    }
+  });
+  document.getElementById('rankings').innerHTML=html;
+}
+
+function rankByRecord(){
+  document.getElementById('saved-note').textContent='fetching standings...';
+  fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/standings')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var entries=[];
+      (data.children||[]).forEach(function(conf){
+        ((conf.standings||{}).entries||[]).forEach(function(e){
+          var wins=0,losses=0;
+          (e.stats||[]).forEach(function(s){
+            if(s.name==='wins')wins=+s.value||0;
+            if(s.name==='losses')losses=+s.value||0;
+          });
+          var abbr=(e.team||{}).abbreviation||'';
+          if(abbr)entries.push({abbr:abbr,pct:wins+losses>0?wins/(wins+losses):0.5,wins:wins,losses:losses});
+        });
+      });
+      if(!entries.length){document.getElementById('saved-note').textContent='could not load standings';return;}
+      entries.sort(function(a,b){return b.pct-a.pct;});
+      var n=entries.length;
+      entries.forEach(function(e,i){
+        // Find matching team by abbreviation
+        var match=null;
+        for(var j=0;j<TEAMS.length;j++){
+          if(TEAMS[j].abbr===e.abbr){match=TEAMS[j];break;}
+        }
+        if(!match)return;
+        // Prorate linearly from 1490 (#1) down to 910 (last)
+        var elo=n>1?Math.round(1490-((1490-910)*(i/(n-1)))):1200;
+        ratings[match.abbr]=elo;
+      });
+      saveRatings();
+      document.getElementById('saved-note').textContent='ratings set from current win %';
+      renderRankings();
+    })
+    .catch(function(){document.getElementById('saved-note').textContent='could not load standings';});
 }
 
 document.addEventListener('keydown',function(e){
