@@ -23,30 +23,37 @@
 }}
 html{font-size:15px}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh}
-.page{max-width:580px;margin:0 auto;padding:2rem 1.25rem 2rem}
-.site-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2rem;padding-bottom:1rem;border-bottom:.5px solid var(--border)}
+/* wide layout for games page, normal for ranker */
+.page{max-width:1000px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+.site-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:.5px solid var(--border)}
 .site-title{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--amber);letter-spacing:-.5px}
-.site-sub{font-size:12px;color:var(--text-3);font-family:var(--mono)}
-.tabs{display:flex;gap:1px;margin-bottom:1.5rem;background:var(--border);border-radius:var(--radius-sm);padding:1px}
-.tab{flex:1;padding:9px 6px;font-size:11px;font-weight:500;font-family:var(--mono);text-align:center;cursor:pointer;color:var(--text-2);background:transparent;border:none;border-radius:calc(var(--radius-sm) - 1px);transition:all .15s;letter-spacing:.3px}
+.tabs{display:flex;gap:1px;margin-bottom:1.5rem;background:var(--border);border-radius:var(--radius-sm);padding:1px;max-width:260px}
+.tab{flex:1;padding:9px 8px;font-size:12px;font-weight:500;font-family:var(--mono);text-align:center;cursor:pointer;color:var(--text-2);background:transparent;border:none;border-radius:calc(var(--radius-sm) - 1px);transition:all .15s}
 .tab:hover{color:var(--text)}
 .tab.active{background:var(--surface);color:var(--text)}
-/* RANKER */
+
+/* ── RANKER (narrow, centered) ──────────────── */
+#view-ranker{max-width:560px}
 .matchup-progress{font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:center;margin-bottom:.5rem;letter-spacing:.5px}
 .round-bar-wrap{margin-bottom:.75rem}
-.round-bar-track{background:var(--border-light);border-radius:3px;height:4px;width:100%}
+.round-bar-track{background:var(--border-light);border-radius:3px;height:4px}
 .round-bar-fill{height:4px;border-radius:3px;background:var(--amber);transition:width .2s}
-.keyboard-hint{font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:center;margin-bottom:1rem}
-.vs-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:start;margin-bottom:1rem}
-.team-btn{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:20px 14px;cursor:pointer;text-align:center;transition:all .12s;width:100%}
+.keyboard-hint{font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:center;margin-bottom:.75rem}
+.vs-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:start;margin-bottom:.75rem}
+.team-btn{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:18px 12px;cursor:pointer;text-align:center;transition:all .12s;width:100%}
 .team-btn:hover{border-color:var(--amber);transform:translateY(-1px)}
-.team-btn img{width:56px;height:56px;object-fit:contain;display:block;margin:0 auto 10px}
+.team-btn img{width:54px;height:54px;object-fit:contain;display:block;margin:0 auto 8px}
 .team-btn .t-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.3}
-.vs-mid{display:flex;align-items:center;justify-content:center;padding-top:38px;font-family:var(--mono);font-size:11px;color:var(--text-3)}
-.skip-wrap{text-align:center;margin-bottom:1.5rem}
+.vs-mid{display:flex;align-items:center;justify-content:center;padding-top:36px;font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.skip-wrap{text-align:center;margin-bottom:1rem}
 .skip-btn{font-size:12px;color:var(--text-3);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.done-banner{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:.75rem;display:flex;gap:8px;align-items:center}
+.done-text{flex:1;font-size:12px;color:var(--text-2)}
+.done-text strong{color:var(--text);font-weight:500;display:block;margin-bottom:1px}
+.rankings-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;margin-top:1.25rem}
+.section-label{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:1px;text-transform:uppercase}
 .rank-list{border-top:.5px solid var(--border-light)}
-.rank-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:.5px solid var(--border-light)}
+.rank-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:.5px solid var(--border-light)}
 .rank-num{font-family:var(--mono);font-size:11px;color:var(--text-3);width:20px;flex-shrink:0}
 .rank-logo{width:22px;height:22px;object-fit:contain;flex-shrink:0}
 .rank-name{font-size:12px;color:var(--text);flex:1}
@@ -55,92 +62,98 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .rank-bar-fill{height:3px;border-radius:2px;background:var(--amber)}
 .rank-elo{font-family:var(--mono);font-size:11px;color:var(--text-3);width:36px;text-align:right;flex-shrink:0}
 .quintile-divider{display:block;height:2px;background:#3B6D11;opacity:.55;margin:0;border:none}
-.done-banner{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:1rem;display:flex;gap:10px;align-items:center}
-.done-text{flex:1;font-size:12px;color:var(--text-2)}
-.done-text strong{color:var(--text);font-weight:500;display:block;margin-bottom:2px}
-.btn{padding:8px 14px;font-size:12px;font-family:var(--mono);border:.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;background:var(--surface);color:var(--text);letter-spacing:.3px;transition:all .12s;white-space:nowrap}
+.saved-note{font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:center;margin-top:.75rem}
+
+/* buttons */
+.btn{padding:7px 13px;font-size:12px;font-family:var(--mono);border:.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;background:var(--surface);color:var(--text);letter-spacing:.3px;transition:all .12s;white-space:nowrap}
 .btn:hover{background:var(--bg);border-color:var(--amber)}
 .btn-amber{background:var(--amber);color:#fff;border-color:var(--amber)}
 .btn-amber:hover{background:var(--amber-dark);border-color:var(--amber-dark)}
-.btn-ghost{background:transparent;border-color:transparent;color:var(--text-3);font-size:11px}
-.btn-ghost:hover{color:var(--text);border-color:var(--border);background:var(--surface)}
-.saved-note{font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:center;margin-top:1rem;letter-spacing:.3px}
-.rankings-header{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;margin-bottom:.75rem}
-.section-label{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:1px;text-transform:uppercase}
-/* GAMES */
-.games-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
-.date-nav{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
-.date-nav button{font-family:var(--mono);font-size:12px;color:var(--text-2);background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;cursor:pointer;flex-shrink:0}
-.date-nav button:hover{border-color:var(--amber);color:var(--text)}
-.date-nav input[type="date"]{font-family:var(--mono);font-size:11px;color:var(--text);background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:6px 8px;cursor:pointer;flex:1;min-width:0}
-.tz-select{font-family:var(--mono);font-size:11px;color:var(--text-2);background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:6px 8px;cursor:pointer}
-.dow-label{font-family:var(--mono);font-size:11px;color:var(--amber);padding:6px 4px;flex-shrink:0;font-weight:500}
-.game-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px}
-.game-card-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.game-rank-num{font-family:var(--mono);font-size:16px;font-weight:500}
-.rank-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.game-date-label{font-family:var(--mono);font-size:10px;color:var(--text-3);margin-left:auto}
-.game-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
-.g-team{text-align:center}
-.g-team img{width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 5px}
+.btn-outline{border-color:var(--text-3);color:var(--text-2)}
+.btn-outline:hover{border-color:var(--amber);color:var(--text);background:var(--bg)}
+.btn-sm{padding:5px 10px;font-size:11px}
+
+/* ── GAMES PAGE (two-column) ────────────── */
+#view-games{display:none}
+.games-layout{display:grid;grid-template-columns:1fr 290px;gap:1.25rem;align-items:start}
+@media(max-width:680px){.games-layout{grid-template-columns:1fr}}
+
+/* LEFT: cards */
+.games-list-col{}
+.games-list-header{display:flex;align-items:center;gap:8px;margin-bottom:.75rem}
+.games-list-title{font-family:var(--mono);font-size:12px;color:var(--text-2);flex:1}
+.tz-select{font-family:var(--mono);font-size:11px;color:var(--text-2);background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 7px;cursor:pointer}
+.game-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:14px 14px 12px;margin-bottom:8px}
+.game-card-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.game-rank-num{font-family:var(--mono);font-size:22px;font-weight:500;line-height:1;color:var(--text-3)}
+.rank-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.game-date-badge{font-family:var(--mono);font-size:11px;color:var(--text-2);background:var(--bg);border:.5px solid var(--border);padding:3px 8px;border-radius:var(--radius-sm);margin-left:auto;font-weight:500}
+.game-date-single{font-family:var(--mono);font-size:11px;color:var(--text-3);margin-left:auto}
+.game-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;text-align:center}
+.g-team img{width:38px;height:38px;object-fit:contain;display:block;margin:0 auto 4px}
 .g-abbr{font-size:13px;font-weight:500;color:var(--text)}
-.g-elo{font-family:var(--mono);font-size:11px;color:var(--amber);margin-top:2px}
+.g-elo{font-family:var(--mono);font-size:11px;color:var(--amber);margin-top:1px}
 .g-dots{margin-top:3px}
 .g-mid{text-align:center}
 .g-at{font-size:10px;color:var(--text-3);font-family:var(--mono);letter-spacing:.5px}
 .g-time{font-size:12px;font-weight:500;color:var(--text);margin:3px 0}
-.g-badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:5px;margin-bottom:2px}
+.g-badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:5px}
 .badge-lp{background:var(--bg);color:var(--text-3);border:.5px solid var(--border)}
 .badge-tv{background:var(--blue-light);color:var(--blue)}
-.g-stars{font-size:11px;margin-top:2px}
-.g-combined{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--amber);margin-top:4px}
+.g-stars{font-size:11px;margin-top:3px}
+.g-combined{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--amber);margin-top:3px}
 .g-bonuses{font-family:var(--mono);font-size:10px;color:#993C1D;margin-top:2px}
-/* CHARTS */
-.chart-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
-.chart-label{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:.5px;margin-bottom:10px}
-.chart-legend{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px}
-.legend-item{font-size:10px;color:var(--text-2);font-family:var(--mono);display:flex;align-items:center;gap:4px;white-space:nowrap}
-.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-/* WEIGHTS */
-.weights-section{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
-.weights-section h3{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
-.weight-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
-.weight-row:last-child{margin-bottom:0}
-.weight-label{font-size:13px;color:var(--text);flex:1}
-.weight-sub{font-size:11px;color:var(--text-3);display:block;margin-top:2px;font-family:var(--mono)}
-.weight-toggle{position:relative;width:36px;height:20px;flex-shrink:0;margin-top:2px}
-.weight-toggle input{opacity:0;width:0;height:0}
-.toggle-track{position:absolute;inset:0;background:var(--border);border-radius:10px;cursor:pointer;transition:background .2s}
-.toggle-track::after{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:white;border-radius:50%;transition:transform .2s}
-input:checked+.toggle-track{background:var(--amber)}
-input:checked+.toggle-track::after{transform:translateX(16px)}
-.weight-input{font-family:var(--mono);font-size:12px;color:var(--text);background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 8px;width:80px;text-align:right}
-.weight-input:focus{outline:none;border-color:var(--amber)}
-.nested{margin-left:16px;padding-left:12px;border-left:2px solid var(--border-light);margin-top:8px;transition:opacity .2s}
-.nested.disabled{opacity:.35;pointer-events:none}
-.radio-group{display:flex;gap:6px;flex-wrap:wrap}
-.radio-pill{font-family:var(--mono);font-size:11px;padding:5px 12px;border:.5px solid var(--border);border-radius:20px;cursor:pointer;color:var(--text-2);background:var(--bg);transition:all .12s}
-.radio-pill.selected{background:var(--amber);color:#fff;border-color:var(--amber)}
-.time-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.time-field{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2);font-family:var(--mono)}
-.time-input{font-family:var(--mono);font-size:12px;color:var(--text);background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 10px;width:120px}
-.time-input:disabled{opacity:.35}
-.date-range-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.date-range-field{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2);font-family:var(--mono)}
-.date-range-input{font-family:var(--mono);font-size:11px;color:var(--text);background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 8px}
-/* PROFILES */
-.profiles-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-.profile-chip{font-family:var(--mono);font-size:11px;padding:4px 10px;border:.5px solid var(--border);border-radius:20px;cursor:pointer;color:var(--text-2);background:var(--surface);display:flex;align-items:center;gap:5px}
-.profile-chip.active-chip{background:var(--amber);color:#fff;border-color:var(--amber)}
-.profile-chip .del{font-size:10px;cursor:pointer;margin-left:2px;opacity:.6}
-.profile-chip .del:hover{opacity:1}
-.profile-new{font-family:var(--mono);font-size:11px;color:var(--amber);background:none;border:.5px dashed var(--amber);border-radius:20px;padding:4px 10px;cursor:pointer}
-.loading{text-align:center;padding:3rem 0;font-family:var(--mono);font-size:12px;color:var(--text-3);animation:pulse 1.5s ease-in-out infinite}
-.loading-small{font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:center;padding:.5rem 0}
-.no-games{text-align:center;padding:3rem 0;font-size:13px;color:var(--text-2)}
-.games-note{font-size:11px;color:var(--text-3);text-align:center;margin-top:1rem;font-family:var(--mono)}
-.about-footer{margin-top:3rem;padding-top:1.5rem;border-top:.5px solid var(--border);text-align:center}
-.about-footer p{font-family:var(--mono);font-size:10px;color:var(--text-3);line-height:1.8;letter-spacing:.3px}
+.loading{text-align:center;padding:2rem 0;font-family:var(--mono);font-size:12px;color:var(--text-3);animation:pulse 1.5s ease-in-out infinite}
+.loading-sm{font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:center;padding:.5rem}
+.no-games{text-align:center;padding:2rem 0;font-size:13px;color:var(--text-2)}
+.games-note{font-size:10px;color:var(--text-3);font-family:var(--mono);margin-top:.5rem}
+
+/* RIGHT: filters sidebar */
+.filters-col{}
+.apply-btn{width:100%;margin-bottom:10px;font-size:12px;padding:9px}
+
+/* filter sections */
+.fs{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:11px 12px;margin-bottom:8px}
+.fs-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.fs-title{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:1px;text-transform:uppercase;flex:1}
+.fs-body{}
+.fw{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.fw:last-child{margin-bottom:0}
+.fw-lbl{font-size:12px;color:var(--text);flex:1;line-height:1.3}
+.fw-sub{font-size:10px;color:var(--text-3);display:block;margin-top:1px;font-family:var(--mono)}
+/* toggle */
+.tog{position:relative;width:32px;height:18px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.tog-track{position:absolute;inset:0;background:var(--border);border-radius:9px;cursor:pointer;transition:background .2s}
+.tog-track::after{content:'';position:absolute;width:12px;height:12px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s}
+input:checked+.tog-track{background:var(--amber)}
+input:checked+.tog-track::after{transform:translateX(14px)}
+/* number input */
+.fw-num{font-family:var(--mono);font-size:11px;color:var(--text);background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:3px 6px;width:64px;text-align:right}
+.fw-num:focus{outline:none;border-color:var(--amber)}
+/* radio pills */
+.pills{display:flex;gap:4px;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:10px;padding:4px 8px;border:.5px solid var(--border);border-radius:20px;cursor:pointer;color:var(--text-2);background:var(--bg);transition:all .12s}
+.pill.on{background:var(--amber);color:#fff;border-color:var(--amber)}
+/* date inputs */
+.date-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.date-lbl{font-family:var(--mono);font-size:10px;color:var(--text-3)}
+.date-in{font-family:var(--mono);font-size:10px;color:var(--text);background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:3px 5px}
+/* time inputs */
+.time-in{font-family:var(--mono);font-size:11px;color:var(--text);background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:3px 6px;width:108px}
+.time-in:disabled{opacity:.35}
+/* nested disabled */
+.nest{margin-top:6px;padding-left:10px;border-left:2px solid var(--border-light);transition:opacity .2s}
+.nest.off{opacity:.35;pointer-events:none}
+/* chart */
+.chart-wrap{margin-top:8px;background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:11px 12px}
+.chart-title{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:.5px;margin-bottom:8px}
+.chart-legend{display:flex;flex-wrap:wrap;gap:3px 8px;margin-top:8px}
+.leg-item{font-size:9px;color:var(--text-2);font-family:var(--mono);display:flex;align-items:center;gap:3px;white-space:nowrap}
+.leg-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+.about-footer{margin-top:2.5rem;padding-top:1.25rem;border-top:.5px solid var(--border);text-align:center}
+.about-footer p{font-family:var(--mono);font-size:10px;color:var(--text-3);line-height:1.8}
 .about-footer a{color:var(--text-2);text-decoration:none}
 .about-footer a:hover{color:var(--amber)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -150,16 +163,13 @@ input:checked+.toggle-track::after{transform:translateX(16px)}
 <div class="page">
 <header class="site-header">
   <div class="site-title">NBA // GAME RANKER</div>
-  <div class="site-sub">powered by your picks</div>
 </header>
 <div class="tabs">
-  <button class="tab active" id="tab-ranker"  onclick="switchTab('ranker')">elo rankings</button>
-  <button class="tab"        id="tab-games"   onclick="switchTab('games')">games</button>
-  <button class="tab"        id="tab-weights" onclick="switchTab('weights')">filters &amp; bonuses</button>
-  <button class="tab"        id="tab-charts"  onclick="switchTab('charts')">charts</button>
+  <button class="tab active" id="tab-ranker" onclick="switchTab('ranker')">elo rankings</button>
+  <button class="tab"        id="tab-games"  onclick="switchTab('games')">games</button>
 </div>
 
-<!-- RANKER -->
+<!-- ══ RANKER ══════════════════════════════════════════ -->
 <div id="view-ranker">
   <div class="matchup-progress" id="progress"></div>
   <div class="round-bar-wrap"><div class="round-bar-track"><div class="round-bar-fill" id="round-bar" style="width:0%"></div></div></div>
@@ -177,137 +187,144 @@ input:checked+.toggle-track::after{transform:translateX(16px)}
   </div>
   <div class="rankings-header" id="rankings-header" style="display:none">
     <div class="section-label">your team rankings</div>
-    <div style="display:flex;gap:6px;align-items:center">
-      <button class="btn btn-ghost" onclick="rankByRecord()" title="Set ratings from current season win %">by record</button>
-      <button class="btn btn-ghost" onclick="confirmReset()">reset to 1200</button>
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-sm btn-outline" onclick="rankByRecord()">sort by record</button>
+      <button class="btn btn-sm btn-outline" onclick="confirmReset()">reset to 1200</button>
     </div>
   </div>
   <div class="rank-list" id="rankings"></div>
   <div class="saved-note" id="saved-note"></div>
 </div>
 
-<!-- GAMES -->
-<div id="view-games" style="display:none">
-  <div class="games-toolbar">
-    <div class="date-nav">
-      <button onclick="shiftDate(-1)">←</button>
-      <input type="date" id="date-picker" onchange="onDatePick()"/>
-      <button onclick="shiftDate(1)">→</button>
-      <button onclick="goToday()">today</button>
+<!-- ══ GAMES ══════════════════════════════════════════ -->
+<div id="view-games">
+  <div class="games-layout">
+
+    <!-- LEFT: game cards -->
+    <div class="games-list-col">
+      <div class="games-list-header">
+        <div class="games-list-title" id="games-title">today's games</div>
+        <select class="tz-select" id="tz-select">
+          <option value="ET">ET</option>
+          <option value="CT">CT</option>
+          <option value="MT">MT</option>
+          <option value="PT">PT</option>
+        </select>
+      </div>
+      <div id="games-content"><div class="loading">loading games...</div></div>
+      <div class="games-note" id="games-note"></div>
     </div>
-    <div class="dow-label" id="dow-label"></div>
-    <select class="tz-select" id="tz-select" onchange="loadGames()">
-      <option value="ET">Eastern (ET)</option>
-      <option value="CT">Central (CT)</option>
-      <option value="MT">Mountain (MT)</option>
-      <option value="PT">Pacific (PT)</option>
-    </select>
+
+    <!-- RIGHT: filters + chart -->
+    <div class="filters-col">
+
+      <button class="btn btn-amber apply-btn" onclick="applyAndLoad()">apply &amp; see games →</button>
+
+      <!-- DATE & TIME -->
+      <div class="fs">
+        <div class="fs-head">
+          <div class="fs-title">date &amp; time</div>
+          <label class="tog"><input type="checkbox" id="w-dt-on" onchange="updateStates()"/><span class="tog-track"></span></label>
+        </div>
+        <div class="fs-body" id="dt-body">
+          <!-- range toggle -->
+          <div class="fw">
+            <div class="fw-lbl">Date range<span class="fw-sub">multiple days, sorted by score</span></div>
+            <label class="tog"><input type="checkbox" id="w-range-on" onchange="updateStates()"/><span class="tog-track"></span></label>
+          </div>
+          <!-- single date -->
+          <div id="single-date-row" class="date-row">
+            <button class="btn btn-sm" onclick="shiftDate(-1)">←</button>
+            <input type="date" class="date-in" id="date-picker"/>
+            <button class="btn btn-sm" onclick="shiftDate(1)">→</button>
+            <button class="btn btn-sm" onclick="goToday()">today</button>
+          </div>
+          <!-- range dates -->
+          <div id="range-date-row" style="display:none" class="date-row">
+            <div class="date-lbl">from</div><input type="date" class="date-in" id="w-from"/>
+            <div class="date-lbl">to</div><input type="date" class="date-in" id="w-to"/>
+          </div>
+          <!-- day filter -->
+          <div class="fw">
+            <div class="fw-lbl">Day of week</div>
+            <div class="pills" id="day-filter">
+              <div class="pill on" data-val="all" onclick="setDay('all')">all</div>
+              <div class="pill" data-val="weekday" onclick="setDay('weekday')">weekdays</div>
+              <div class="pill" data-val="weekend" onclick="setDay('weekend')">weekends</div>
+            </div>
+          </div>
+          <!-- tip-off time -->
+          <div class="fw">
+            <div class="fw-lbl">Tip-off time filter</div>
+            <label class="tog"><input type="checkbox" id="w-time-on" onchange="updateStates()"/><span class="tog-track"></span></label>
+          </div>
+          <div class="nest off" id="time-nest">
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+              <span style="font-family:var(--mono);font-size:10px;color:var(--text-3)">after</span>
+              <input type="time" class="time-in" id="w-min-time" value="00:00"/>
+              <span style="font-family:var(--mono);font-size:10px;color:var(--text-3)">before</span>
+              <input type="time" class="time-in" id="w-max-time" value="23:59"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BROADCAST -->
+      <div class="fs">
+        <div class="fs-head"><div class="fs-title">broadcast</div></div>
+        <div class="fw">
+          <div class="fw-lbl">Show</div>
+          <div class="pills" id="bcast-filter">
+            <div class="pill on" data-val="all" onclick="setBcast('all')">all</div>
+            <div class="pill" data-val="national" onclick="setBcast('national')">national TV</div>
+            <div class="pill" data-val="lp" onclick="setBcast('lp')">league pass</div>
+          </div>
+        </div>
+        <div class="fw">
+          <div class="fw-lbl">National TV bonus</div>
+          <label class="tog"><input type="checkbox" id="w-tv-on" onchange="updateStates()"/><span class="tog-track"></span></label>
+        </div>
+        <div class="nest off" id="tv-nest">
+          <div class="fw">
+            <div class="fw-lbl">Amount</div>
+            <input type="number" class="fw-num" id="w-tv-bonus" value="100"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLAYOFF LEVERAGE -->
+      <div class="fs">
+        <div class="fs-head">
+          <div class="fs-title">playoff leverage</div>
+          <label class="tog"><input type="checkbox" id="w-lev-on" checked onchange="updateStates()"/><span class="tog-track"></span></label>
+        </div>
+        <div class="nest" id="lev-nest">
+          <div class="fw">
+            <div class="fw-lbl">Elimination<span class="fw-sub">one win from elim.</span></div>
+            <input type="number" class="fw-num" id="w-elim" value="300"/>
+          </div>
+          <div class="fw">
+            <div class="fw-lbl">Tied series</div>
+            <input type="number" class="fw-num" id="w-tied" value="200"/>
+          </div>
+          <div class="fw">
+            <div class="fw-lbl">Game 1</div>
+            <input type="number" class="fw-num" id="w-game1" value="100"/>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-outline btn-sm" style="width:100%;margin-bottom:8px" onclick="resetFilters()">reset all filters</button>
+
+      <!-- CHART -->
+      <div class="chart-wrap" id="chart-wrap" style="display:none">
+        <div class="chart-title">matchup map</div>
+        <canvas id="scatter-canvas"></canvas>
+        <div class="chart-legend" id="chart-legend"></div>
+      </div>
+
+    </div>
   </div>
-  <div id="games-content"><div class="loading">loading games...</div></div>
-  <div class="games-note" id="games-note"></div>
-</div>
-
-<!-- WEIGHTS -->
-<div id="view-weights" style="display:none">
-  <div class="weights-section">
-    <h3>saved profiles</h3>
-    <div class="profiles-bar" id="profiles-bar"></div>
-    <button class="profile-new" onclick="saveProfile()">+ save current as profile</button>
-  </div>
-
-  <div class="weights-section">
-    <h3>date range</h3>
-    <div class="weight-row">
-      <div class="weight-label">Fetch games across a range<span class="weight-sub">sorted by score, not grouped by day</span></div>
-      <label class="weight-toggle"><input type="checkbox" id="w-range-on" onchange="saveWeights()"/><span class="toggle-track"></span></label>
-    </div>
-    <div class="nested" id="range-fields">
-      <div class="date-range-row">
-        <div class="date-range-field"><span>from</span><input type="date" class="date-range-input" id="w-range-from"/></div>
-        <div class="date-range-field"><span>to</span><input type="date" class="date-range-input" id="w-range-to"/></div>
-      </div>
-      <div style="margin-top:10px">
-        <button class="btn btn-amber" onclick="loadRangeGames()">fetch range →</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="weights-section">
-    <h3>broadcast filter</h3>
-    <div class="weight-row">
-      <div class="weight-label">Show games</div>
-      <div class="radio-group" id="broadcast-filter">
-        <div class="radio-pill" data-val="all" onclick="setBroadcastFilter('all')">all</div>
-        <div class="radio-pill" data-val="national" onclick="setBroadcastFilter('national')">national TV only</div>
-        <div class="radio-pill" data-val="leaguepass" onclick="setBroadcastFilter('leaguepass')">league pass only</div>
-      </div>
-    </div>
-    <div class="nested" id="tv-bonus-section">
-      <div class="weight-row">
-        <div class="weight-label">National TV score bonus<span class="weight-sub">added to ranking score</span></div>
-        <label class="weight-toggle"><input type="checkbox" id="w-tv-on" onchange="saveWeights()"/><span class="toggle-track"></span></label>
-      </div>
-      <div class="weight-row">
-        <div class="weight-label">Bonus amount</div>
-        <input type="number" class="weight-input" id="w-tv-bonus" value="100" onchange="saveWeights()"/>
-      </div>
-    </div>
-  </div>
-
-  <div class="weights-section">
-    <h3>day filter</h3>
-    <div class="weight-row">
-      <div class="weight-label">Show games on</div>
-      <div class="radio-group" id="day-filter">
-        <div class="radio-pill" data-val="all" onclick="setDayFilter('all')">all days</div>
-        <div class="radio-pill" data-val="weekday" onclick="setDayFilter('weekday')">weekdays</div>
-        <div class="radio-pill" data-val="weekend" onclick="setDayFilter('weekend')">weekends</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="weights-section">
-    <h3>tip-off time filter</h3>
-    <div class="weight-row">
-      <div class="weight-label">Enable time filter<span class="weight-sub">uses time zone selected in games tab</span></div>
-      <label class="weight-toggle"><input type="checkbox" id="w-time-filter-on" onchange="saveWeights()"/><span class="toggle-track"></span></label>
-    </div>
-    <div class="nested" id="time-filter-fields">
-      <div class="time-row">
-        <div class="time-field"><span>after</span><input type="time" class="time-input" id="w-min-time" value="00:00" onchange="saveWeights()"/></div>
-        <div class="time-field"><span>before</span><input type="time" class="time-input" id="w-max-time" value="23:59" onchange="saveWeights()"/></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="weights-section">
-    <h3>playoff leverage</h3>
-    <div class="weight-row">
-      <div class="weight-label">Enable leverage bonuses<span class="weight-sub">boosts high-stakes playoff games</span></div>
-      <label class="weight-toggle"><input type="checkbox" id="w-leverage-on" checked onchange="saveWeights()"/><span class="toggle-track"></span></label>
-    </div>
-    <div class="nested" id="leverage-fields">
-      <div class="weight-row">
-        <div class="weight-label">Elimination game<span class="weight-sub">one win from elimination</span></div>
-        <input type="number" class="weight-input" id="w-elim" value="300" onchange="saveWeights()"/>
-      </div>
-      <div class="weight-row">
-        <div class="weight-label">Tied series<span class="weight-sub">1-1, 2-2, or 3-3</span></div>
-        <input type="number" class="weight-input" id="w-tied" value="200" onchange="saveWeights()"/>
-      </div>
-      <div class="weight-row">
-        <div class="weight-label">Game 1<span class="weight-sub">series opener, 0-0</span></div>
-        <input type="number" class="weight-input" id="w-game1" value="100" onchange="saveWeights()"/>
-      </div>
-    </div>
-  </div>
-
-  <button class="btn btn-amber" style="width:100%;margin-top:4px" onclick="switchTab('games');loadGames()">apply &amp; see today's games →</button>
-</div>
-
-<!-- CHARTS -->
-<div id="view-charts" style="display:none">
-  <div id="charts-content"><div class="no-games" style="padding:3rem 0">load games first, then come back here</div></div>
 </div>
 
 <footer class="about-footer">
@@ -345,140 +362,144 @@ var TEAMS=[
   {name:"Memphis Grizzlies",abbr:"MEM",espn:"mem"},
   {name:"Washington Wizards",abbr:"WAS",espn:"wsh"},
   {name:"Brooklyn Nets",abbr:"BKN",espn:"bkn"},
-  {name:"Utah Jazz",abbr:"UTA",espn:"utah"},  // ESPN logo path uses "utah" not "uta"
+  {name:"Utah Jazz",abbr:"UTA",espn:"utah"},
   {name:"Sacramento Kings",abbr:"SAC",espn:"sac"},
 ];
-
 var DOT_COLORS=["#BA7517","#888780","#854F0B","#4E9FC4","#5BAF7A","#7B68C8","#C25B8A","#3EAAA0","#6B9E5E","#B05CB0","#5B8FC4","#4E8E8E"];
 var DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 var MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-function logo(espn){return"https://a.espncdn.com/i/teamlogos/nba/500/"+espn+".png";}
+function logo(e){return"https://a.espncdn.com/i/teamlogos/nba/500/"+e+".png";}
 
-// ─────────────────────────────────────────────────────
-// STORAGE KEYS — never change these or ratings will wipe
-// ─────────────────────────────────────────────────────
-var KEY_RATINGS = 'nba_elo_ratings';   // permanent key
-var KEY_ROUND   = 'nba_round_state';   // permanent key
-var KEY_WEIGHTS = 'nba_weights';
-var KEY_PROFILES= 'nba_profiles';
+// permanent storage keys
+var KEY_RATINGS='nba_elo_ratings';
+var KEY_ROUND='nba_round_state';
 
-// ── ELO ──────────────────────────────────────────────
-var K=32, ratings={}, matchups=[], current=0, roundSeed=null, flipMap={};
-
+// ── ELO ─────────────────────────────────────────────
+var K=32,ratings={},matchups=[],current=0,roundSeed=null,flipMap={};
 function loadRatings(){try{var s=localStorage.getItem(KEY_RATINGS);if(s)return JSON.parse(s);}catch(e){}return null;}
 function saveRatings(){try{localStorage.setItem(KEY_RATINGS,JSON.stringify(ratings));}catch(e){}}
-
 function loadRoundState(){try{var s=localStorage.getItem(KEY_ROUND);if(s)return JSON.parse(s);}catch(e){}return null;}
 function saveRoundState(){try{localStorage.setItem(KEY_ROUND,JSON.stringify({matchups:matchups,current:current,seed:roundSeed}));}catch(e){}}
 function clearRoundState(){try{localStorage.removeItem(KEY_ROUND);}catch(e){}}
 
 function initRatings(){
-  var saved=loadRatings();
-  if(saved){
-    ratings=saved;
-    document.getElementById('saved-note').textContent='↑ continuing from saved ratings';
-  } else {
-    TEAMS.forEach(function(t){ratings[t.abbr]=1200;});
-  }
+  var s=loadRatings();
+  if(s){ratings=s;document.getElementById('saved-note').textContent='↑ continuing from saved ratings';}
+  else{TEAMS.forEach(function(t){ratings[t.abbr]=1200;});}
 }
-
-// Seeded PRNG so we can restore round order
-function mulberry32(a){
-  return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
-}
-
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function buildMatchups(seed){
-  roundSeed=seed||Date.now();
-  matchups=[];
+  roundSeed=seed||Date.now();matchups=[];
   for(var i=0;i<TEAMS.length;i++)for(var j=i+1;j<TEAMS.length;j++)matchups.push([i,j]);
   var rng=mulberry32(roundSeed);
   for(var k=matchups.length-1;k>0;k--){var r=Math.floor(rng()*(k+1)),tmp=matchups[k];matchups[k]=matchups[r];matchups[r]=tmp;}
-  // Pre-compute left/right flip for every matchup using same seed
-  flipMap={};
-  var rng2=mulberry32(roundSeed+1);
+  flipMap={};var rng2=mulberry32(roundSeed+1);
   for(var m=0;m<matchups.length;m++)flipMap[m]=rng2()<0.5;
   current=0;
 }
-
 function initRound(){
-  var saved=loadRoundState();
-  if(saved&&saved.matchups&&saved.matchups.length){
-    matchups=saved.matchups;current=saved.current||0;roundSeed=saved.seed;
-    // Rebuild flipMap deterministically from seed
-    flipMap={};
-    var rng2=mulberry32((roundSeed||0)+1);
+  var s=loadRoundState();
+  if(s&&s.matchups&&s.matchups.length){
+    matchups=s.matchups;current=s.current||0;roundSeed=s.seed;
+    flipMap={};var rng2=mulberry32((roundSeed||0)+1);
     for(var m=0;m<matchups.length;m++)flipMap[m]=rng2()<0.5;
-  } else {
-    buildMatchups();
-  }
+  }else{buildMatchups();}
 }
-
 function expected(ra,rb){return 1/(1+Math.pow(10,(rb-ra)/400));}
 function updateElo(wa,la){
   var ra=ratings[wa],rb=ratings[la],ea=expected(ra,rb);
-  ratings[wa]=Math.round(ra+K*(1-ea));ratings[la]=Math.round(rb+K*(0-(1-ea)));
-  saveRatings();
+  ratings[wa]=Math.round(ra+K*(1-ea));ratings[la]=Math.round(rb+K*(0-(1-ea)));saveRatings();
 }
-
 function assignButtons(){
   if(current>=matchups.length)return;
-  var p=matchups[current];
-  var flip=!!flipMap[current];
-  var left=TEAMS[flip?p[1]:p[0]],right=TEAMS[flip?p[0]:p[1]];
-  document.getElementById('logo-a').src=logo(left.espn);
-  document.getElementById('name-a').textContent=left.name;
-  document.getElementById('logo-b').src=logo(right.espn);
-  document.getElementById('name-b').textContent=right.name;
-  // Capture current index in closure to avoid stale reference
-  (function(idx,l,r){
+  var p=matchups[current],flip=!!flipMap[current];
+  var L=TEAMS[flip?p[1]:p[0]],R=TEAMS[flip?p[0]:p[1]];
+  document.getElementById('logo-a').src=logo(L.espn);document.getElementById('name-a').textContent=L.name;
+  document.getElementById('logo-b').src=logo(R.espn);document.getElementById('name-b').textContent=R.name;
+  (function(l,r){
     document.getElementById('btn-a').onclick=function(){updateElo(l.abbr,r.abbr);current++;saveRoundState();render();};
     document.getElementById('btn-b').onclick=function(){updateElo(r.abbr,l.abbr);current++;saveRoundState();render();};
-  })(current,left,right);
+  })(L,R);
 }
-
 function skip(){if(current<matchups.length){current++;saveRoundState();render();}}
-
 function newRound(){
-  clearRoundState();
-  buildMatchups();
+  clearRoundState();buildMatchups();
   document.getElementById('done-banner').style.display='none';
   document.getElementById('vs-wrap').style.display='grid';
   document.querySelector('.skip-wrap').style.display='block';
   render();
 }
-
 function confirmReset(){
-  if(!confirm('Reset all ratings to 1200? Cannot be undone.'))return;
-  TEAMS.forEach(function(t){ratings[t.abbr]=1200;});
-  saveRatings();clearRoundState();buildMatchups();
+  if(!confirm('Reset all ratings to 1200?'))return;
+  TEAMS.forEach(function(t){ratings[t.abbr]=1200;});saveRatings();clearRoundState();buildMatchups();
   document.getElementById('done-banner').style.display='none';
   document.getElementById('vs-wrap').style.display='grid';
   document.querySelector('.skip-wrap').style.display='block';
-  document.getElementById('saved-note').textContent='ratings reset';
+  document.getElementById('saved-note').textContent='ratings reset to 1200';
   render();
+}
+
+function rankByRecord(){
+  document.getElementById('saved-note').textContent='fetching standings...';
+  // Try both common ESPN standings endpoints
+  var urls=[
+    'https://site.api.espn.com/apis/v2/sports/basketball/nba/standings',
+    'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/standings'
+  ];
+  function tryUrl(i){
+    if(i>=urls.length){document.getElementById('saved-note').textContent='could not load standings';return;}
+    fetch(urls[i])
+      .then(function(r){if(!r.ok)throw new Error('bad');return r.json();})
+      .then(function(data){
+        var entries=[];
+        // Handle both response shapes
+        var groups=data.children||data.standings||[];
+        if(data.standings&&data.standings.entries)groups=[data];
+        groups.forEach(function(g){
+          var ents=((g.standings||g).entries)||[];
+          ents.forEach(function(e){
+            var wins=0,losses=0,abbr=(e.team||{}).abbreviation||'';
+            (e.stats||[]).forEach(function(s){
+              if(s.name==='wins'||s.abbreviation==='W')wins=+s.value||0;
+              if(s.name==='losses'||s.abbreviation==='L')losses=+s.value||0;
+            });
+            if(abbr)entries.push({abbr:abbr,pct:wins+losses>0?wins/(wins+losses):0.5});
+          });
+        });
+        if(!entries.length){tryUrl(i+1);return;}
+        entries.sort(function(a,b){return b.pct-a.pct;});
+        var n=entries.length;
+        entries.forEach(function(e,idx){
+          var match=null;
+          for(var j=0;j<TEAMS.length;j++){if(TEAMS[j].abbr===e.abbr){match=TEAMS[j];break;}}
+          if(!match)return;
+          ratings[match.abbr]=n>1?Math.round(1490-((1490-910)*(idx/(n-1)))):1200;
+        });
+        saveRatings();
+        document.getElementById('saved-note').textContent='sorted by current win %';
+        renderRankings();
+      })
+      .catch(function(){tryUrl(i+1);});
+  }
+  tryUrl(0);
 }
 
 function render(){
   renderRankings();
   var done=current>=matchups.length;
-  var pct=matchups.length>0?Math.round((current/matchups.length)*100):0;
+  var pct=matchups.length?Math.round((current/matchups.length)*100):0;
   document.getElementById('round-bar').style.width=pct+'%';
   document.getElementById('done-banner').style.display=done?'flex':'none';
   document.getElementById('vs-wrap').style.display=done?'none':'grid';
   document.querySelector('.skip-wrap').style.display=done?'none':'block';
   document.getElementById('rankings-header').style.display='flex';
-  if(done){
-    document.getElementById('progress').textContent='round complete!';
-    return;
-  }
+  if(done){document.getElementById('progress').textContent='round complete!';return;}
   document.getElementById('progress').textContent='matchup '+(current+1)+' / '+matchups.length;
   assignButtons();
 }
-
 function renderRankings(){
   var sorted=TEAMS.slice().sort(function(a,b){return ratings[b.abbr]-ratings[a.abbr];});
   var mx=ratings[sorted[0].abbr],mn=ratings[sorted[sorted.length-1].abbr];
-  // Insert a green divider after every 6th team (quintile boundaries: after #6, #12, #18, #24)
   var html='';
   sorted.forEach(function(t,i){
     var pct=mx===mn?100:Math.round(((ratings[t.abbr]-mn)/(mx-mn))*100);
@@ -487,54 +508,11 @@ function renderRankings(){
       '<img class="rank-logo" src="'+logo(t.espn)+'" alt="'+t.abbr+'"/>'+
       '<div class="rank-name">'+t.name+'</div>'+
       '<div class="rank-bar-wrap"><div class="rank-bar-track"><div class="rank-bar-fill" style="width:'+pct+'%"></div></div></div>'+
-      '<div class="rank-elo">'+ratings[t.abbr]+'</div>'+
-    '</div>';
-    // After positions 6, 12, 18, 24 (0-indexed: 5, 11, 17, 23) insert divider
-    if(i===5||i===11||i===17||i===23){
-      html+='<hr class="quintile-divider"/>';
-    }
+      '<div class="rank-elo">'+ratings[t.abbr]+'</div></div>';
+    if(i===5||i===11||i===17||i===23)html+='<hr class="quintile-divider"/>';
   });
   document.getElementById('rankings').innerHTML=html;
 }
-
-function rankByRecord(){
-  document.getElementById('saved-note').textContent='fetching standings...';
-  fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/standings')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      var entries=[];
-      (data.children||[]).forEach(function(conf){
-        ((conf.standings||{}).entries||[]).forEach(function(e){
-          var wins=0,losses=0;
-          (e.stats||[]).forEach(function(s){
-            if(s.name==='wins')wins=+s.value||0;
-            if(s.name==='losses')losses=+s.value||0;
-          });
-          var abbr=(e.team||{}).abbreviation||'';
-          if(abbr)entries.push({abbr:abbr,pct:wins+losses>0?wins/(wins+losses):0.5,wins:wins,losses:losses});
-        });
-      });
-      if(!entries.length){document.getElementById('saved-note').textContent='could not load standings';return;}
-      entries.sort(function(a,b){return b.pct-a.pct;});
-      var n=entries.length;
-      entries.forEach(function(e,i){
-        // Find matching team by abbreviation
-        var match=null;
-        for(var j=0;j<TEAMS.length;j++){
-          if(TEAMS[j].abbr===e.abbr){match=TEAMS[j];break;}
-        }
-        if(!match)return;
-        // Prorate linearly from 1490 (#1) down to 910 (last)
-        var elo=n>1?Math.round(1490-((1490-910)*(i/(n-1)))):1200;
-        ratings[match.abbr]=elo;
-      });
-      saveRatings();
-      document.getElementById('saved-note').textContent='ratings set from current win %';
-      renderRankings();
-    })
-    .catch(function(){document.getElementById('saved-note').textContent='could not load standings';});
-}
-
 document.addEventListener('keydown',function(e){
   if(document.getElementById('view-ranker').style.display==='none')return;
   if(current>=matchups.length)return;
@@ -543,116 +521,13 @@ document.addEventListener('keydown',function(e){
   else if(e.key==='ArrowDown'){e.preventDefault();skip();}
 });
 
-// ── WEIGHTS ──────────────────────────────────────────
-var weights={
-  broadcastFilter:'all',tvOn:false,tvBonus:100,
-  dayFilter:'all',
-  timeFilterOn:false,minTime:'00:00',maxTime:'23:59',
-  leverageOn:true,elim:300,tied:200,game1:100,
-  rangeOn:false
-};
-var broadcastFilterVal='all',dayFilterVal='all';
-
-function loadWeights(){try{var s=localStorage.getItem(KEY_WEIGHTS);if(s)return JSON.parse(s);}catch(e){}return null;}
-function saveWeights(){
-  weights.broadcastFilter=broadcastFilterVal;
-  weights.dayFilter=dayFilterVal;
-  weights.tvOn=document.getElementById('w-tv-on').checked;
-  weights.tvBonus=+document.getElementById('w-tv-bonus').value||0;
-  weights.timeFilterOn=document.getElementById('w-time-filter-on').checked;
-  weights.minTime=document.getElementById('w-min-time').value;
-  weights.maxTime=document.getElementById('w-max-time').value;
-  weights.leverageOn=document.getElementById('w-leverage-on').checked;
-  weights.elim=+document.getElementById('w-elim').value||0;
-  weights.tied=+document.getElementById('w-tied').value||0;
-  weights.game1=+document.getElementById('w-game1').value||0;
-  weights.rangeOn=document.getElementById('w-range-on').checked;
-  try{localStorage.setItem(KEY_WEIGHTS,JSON.stringify(weights));}catch(e){}
-  updateWeightStates();
-}
-
-function applyWeightsToUI(){
-  // Restore all fields from weights object
-  setBroadcastFilter(weights.broadcastFilter||'all');
-  setDayFilter(weights.dayFilter||'all');
-  document.getElementById('w-tv-on').checked=!!weights.tvOn;
-  document.getElementById('w-tv-bonus').value=weights.tvBonus||100;
-  document.getElementById('w-time-filter-on').checked=!!weights.timeFilterOn;
-  document.getElementById('w-min-time').value=weights.minTime||'00:00';
-  document.getElementById('w-max-time').value=weights.maxTime||'23:59';
-  document.getElementById('w-leverage-on').checked=weights.leverageOn!==false;
-  document.getElementById('w-elim').value=weights.elim||300;
-  document.getElementById('w-tied').value=weights.tied||200;
-  document.getElementById('w-game1').value=weights.game1||100;
-  document.getElementById('w-range-on').checked=!!weights.rangeOn;
-  updateWeightStates();
-}
-
-function setBroadcastFilter(val){
-  broadcastFilterVal=val;
-  document.querySelectorAll('#broadcast-filter .radio-pill').forEach(function(el){
-    el.classList.toggle('selected',el.dataset.val===val);
-  });
-  document.getElementById('tv-bonus-section').classList.toggle('disabled',val==='leaguepass');
-}
-function setDayFilter(val){
-  dayFilterVal=val;
-  document.querySelectorAll('#day-filter .radio-pill').forEach(function(el){
-    el.classList.toggle('selected',el.dataset.val===val);
-  });
-}
-function updateWeightStates(){
-  document.getElementById('leverage-fields').classList.toggle('disabled',!document.getElementById('w-leverage-on').checked);
-  document.getElementById('time-filter-fields').classList.toggle('disabled',!document.getElementById('w-time-filter-on').checked);
-  document.getElementById('range-fields').classList.toggle('disabled',!document.getElementById('w-range-on').checked);
-}
-function initWeights(){
-  var saved=loadWeights();
-  if(saved)weights=Object.assign(weights,saved);
-  applyWeightsToUI();
-}
-
-// ── PROFILES ─────────────────────────────────────────
-var profiles={};
-function loadProfiles(){try{var s=localStorage.getItem(KEY_PROFILES);if(s)return JSON.parse(s);}catch(e){}return{};}
-function saveProfilesStore(){try{localStorage.setItem(KEY_PROFILES,JSON.stringify(profiles));}catch(e){}}
-
-function saveProfile(){
-  saveWeights();
-  var name=prompt('Name this profile:','my profile');
-  if(!name||!name.trim())return;
-  profiles[name.trim()]=JSON.parse(JSON.stringify(weights));
-  // also store the radio pill values explicitly
-  profiles[name.trim()].broadcastFilter=broadcastFilterVal;
-  profiles[name.trim()].dayFilter=dayFilterVal;
-  saveProfilesStore();renderProfiles();
-}
-function loadProfile(name){
-  if(!profiles[name])return;
-  weights=Object.assign({},weights,profiles[name]);
-  applyWeightsToUI();
-  renderProfiles();
-}
-function deleteProfile(name){
-  if(!confirm('Delete "'+name+'"?'))return;
-  delete profiles[name];saveProfilesStore();renderProfiles();
-}
-function renderProfiles(){
-  document.getElementById('profiles-bar').innerHTML=Object.keys(profiles).map(function(n){
-    return'<div class="profile-chip" onclick="loadProfile(\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">'+
-      n+'<span class="del" onclick="event.stopPropagation();deleteProfile(\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">✕</span></div>';
-  }).join('');
-}
-
 // ── DATE ────────────────────────────────────────────
 var currentDate=new Date();
 function pad(n){return String(n).padStart(2,'0');}
-function dateStr(d){return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());}
-function inputVal(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
-function updateDOW(){document.getElementById('dow-label').textContent=DOW[currentDate.getDay()]+', '+MONTHS[currentDate.getMonth()]+' '+currentDate.getDate();}
-function shiftDate(delta){currentDate.setDate(currentDate.getDate()+delta);document.getElementById('date-picker').value=inputVal(currentDate);updateDOW();loadGames();}
-function goToday(){currentDate=new Date();document.getElementById('date-picker').value=inputVal(currentDate);updateDOW();loadGames();}
-function onDatePick(){var v=document.getElementById('date-picker').value;if(v){var p=v.split('-');currentDate=new Date(+p[0],+p[1]-1,+p[2]);updateDOW();loadGames();}}
+function dstr(d){return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());}
+function ival(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function shiftDate(delta){currentDate.setDate(currentDate.getDate()+delta);document.getElementById('date-picker').value=ival(currentDate);}
+function goToday(){currentDate=new Date();document.getElementById('date-picker').value=ival(currentDate);}
 
 // ── TZ ──────────────────────────────────────────────
 function tzOff(tz){var d=new Date(),dst=d.getMonth()>=2&&d.getMonth()<=10;return({ET:-5,CT:-6,MT:-7,PT:-8}[tz]||-5)+(dst?1:0);}
@@ -661,105 +536,136 @@ function fmtTime(utc,tz){
   var d=new Date(ms),h=d.getHours()%12||12,m=d.getMinutes(),ap=d.getHours()>=12?'PM':'AM';
   return h+':'+(m<10?'0':'')+m+' '+ap+' '+tz;
 }
-function fmtDate(utc){var d=utc;return DOW[d.getDay()]+' '+MONTHS[d.getMonth()]+' '+d.getDate();}
-function gameHour(utc,tz){var ms=utc.getTime()+(tzOff(tz)*3600000)+(utc.getTimezoneOffset()*60000);var d=new Date(ms);return d.getHours()+d.getMinutes()/60;}
+function gameHr(utc,tz){var ms=utc.getTime()+(tzOff(tz)*3600000)+(utc.getTimezoneOffset()*60000);var d=new Date(ms);return d.getHours()+d.getMinutes()/60;}
+function fmtDateShort(d){return DOW[d.getDay()]+' '+MONTHS[d.getMonth()]+' '+d.getDate();}
 
-// ── QUINTILES ────────────────────────────────────────
+// ── QUINTILES ───────────────────────────────────────
 var TMIN=955,TMAX=1492,TRANGE=TMAX-TMIN;
 var CMIN=1920,CMAX=2931,CRANGE=CMAX-CMIN;
 function teamQ(elo){var p=(elo-TMIN)/TRANGE;return p>=0.8?5:p>=0.6?4:p>=0.4?3:p>=0.2?2:1;}
-function gameStars(score){var p=(score-CMIN)/CRANGE;return p>=0.8?5:p>=0.6?4:p>=0.4?3:p>=0.2?2:1;}
+function gameStars(s){var p=(s-CMIN)/CRANGE;return p>=0.8?5:p>=0.6?4:p>=0.4?3:p>=0.2?2:1;}
 function dotsHtml(n){var h='';for(var i=0;i<5;i++)h+='<span style="display:inline-block;width:6px;height:6px;border-radius:50%;margin:0 1px;background:'+(i<n?'#3B6D11':'#D3D1C7')+'"></span>';return h;}
 function starsHtml(n,flame){
   var f='',e='';for(var i=0;i<Math.min(n,5);i++)f+='★';for(var i=n;i<5;i++)e+='★';
   var s='<span style="color:#BA7517;font-size:11px;">'+f+'</span><span style="color:#D3D1C7;font-size:11px;">'+e+'</span>';
   return flame?'🔥'+s+'🔥':s;
 }
-function timeToHr(t){var p=(t||'00:00').split(':');return+p[0]+(+p[1]/60);}
+function toHr(t){var p=(t||'00:00').split(':');return+p[0]+(+p[1]/60);}
 
-// ── GAME PROCESSING ──────────────────────────────────
-var lastGames=[];
+// ── FILTER STATE ────────────────────────────────────
+var bcastVal='all',dayVal='all';
+function setBcast(v){bcastVal=v;document.querySelectorAll('#bcast-filter .pill').forEach(function(el){el.classList.toggle('on',el.dataset.val===v);});}
+function setDay(v){dayVal=v;document.querySelectorAll('#day-filter .pill').forEach(function(el){el.classList.toggle('on',el.dataset.val===v);});}
 
-function getTeamData(name){
-  for(var i=0;i<TEAMS.length;i++){
-    var t=TEAMS[i];
-    if(name===t.name||name.includes(t.name.split(' ').pop()))
-      return{elo:ratings[t.abbr]||1200,abbr:t.abbr,espn:t.espn};
-  }
-  return{elo:1200,abbr:name.substring(0,3).toUpperCase(),espn:''};
+function updateStates(){
+  var dtOn=document.getElementById('w-dt-on').checked;
+  document.getElementById('dt-body').style.opacity=dtOn?'1':'0.4';
+  document.getElementById('dt-body').style.pointerEvents=dtOn?'':'none';
+  var rangeOn=document.getElementById('w-range-on').checked;
+  document.getElementById('single-date-row').style.display=rangeOn?'none':'flex';
+  document.getElementById('range-date-row').style.display=rangeOn?'flex':'none';
+  var timeOn=document.getElementById('w-time-on').checked;
+  document.getElementById('time-nest').classList.toggle('off',!timeOn);
+  var tvOn=document.getElementById('w-tv-on').checked;
+  document.getElementById('tv-nest').classList.toggle('off',!tvOn);
+  var levOn=document.getElementById('w-lev-on').checked;
+  document.getElementById('lev-nest').classList.toggle('off',!levOn);
 }
 
+function resetFilters(){
+  document.getElementById('w-dt-on').checked=false;
+  document.getElementById('w-range-on').checked=false;
+  document.getElementById('w-time-on').checked=false;
+  document.getElementById('w-min-time').value='00:00';
+  document.getElementById('w-max-time').value='23:59';
+  document.getElementById('w-tv-on').checked=false;
+  document.getElementById('w-tv-bonus').value=100;
+  document.getElementById('w-lev-on').checked=true;
+  document.getElementById('w-elim').value=300;
+  document.getElementById('w-tied').value=200;
+  document.getElementById('w-game1').value=100;
+  setBcast('all');setDay('all');updateStates();
+}
+
+// ── GAME PROCESSING ─────────────────────────────────
+var lastGames=[];
+function getTeamData(name){
+  for(var i=0;i<TEAMS.length;i++){var t=TEAMS[i];if(name===t.name||name.includes(t.name.split(' ').pop()))return{elo:ratings[t.abbr]||1200,abbr:t.abbr,espn:t.espn};}
+  return{elo:1200,abbr:name.substring(0,3).toUpperCase(),espn:''};
+}
 function processEvent(ev,tz){
   var comp=ev.competitions[0];
   var home=comp.competitors[0],away=comp.competitors[1];
   var hd=getTeamData(home.team.displayName),ad=getTeamData(away.team.displayName);
-  var combined=hd.elo+ad.elo;
-  var utc=new Date(ev.date);
-  var timeStr=fmtTime(utc,tz),hr=gameHour(utc,tz);
-  var dateLabel=fmtDate(utc);
-  var watch='League Pass';
+  var combined=hd.elo+ad.elo,utc=new Date(ev.date);
+  var watch='League Pass',isNat=false;
   if(comp.broadcasts&&comp.broadcasts.length){
     var ns=comp.broadcasts[0].names||[];
-    for(var i=0;i<ns.length;i++){if(['ABC','ESPN','ESPN2','NBC','Prime Video','Peacock'].indexOf(ns[i])>=0){watch=ns[i];break;}}
+    for(var i=0;i<ns.length;i++){if(['ABC','ESPN','ESPN2','NBC','Prime Video','Peacock','TNT','TBS'].indexOf(ns[i])>=0){watch=ns[i];isNat=true;break;}}
   }
-  var isNatTV=watch!=='League Pass';
-  var lev=0,levLabel='';
-  if(comp.series&&weights.leverageOn){
+  var levOn=document.getElementById('w-lev-on').checked;
+  var lev=0,levLbl='';
+  if(comp.series&&levOn){
     var hw=0,aw=0;
     (comp.series.competitors||[]).forEach(function(c){if(c.id===home.team.id)hw=c.wins||0;if(c.id===away.team.id)aw=c.wins||0;});
-    if(hw===3||aw===3){lev=weights.elim;levLabel='elimination';}
-    else if(hw===aw&&hw>0){lev=weights.tied;levLabel='tied '+hw+'-'+aw;}
-    else if(hw+aw===0){lev=weights.game1;levLabel='game 1';}
+    if(hw===3||aw===3){lev=+document.getElementById('w-elim').value||0;levLbl='elimination';}
+    else if(hw===aw&&hw>0){lev=+document.getElementById('w-tied').value||0;levLbl='tied '+hw+'-'+aw;}
+    else if(hw+aw===0){lev=+document.getElementById('w-game1').value||0;levLbl='game 1';}
   }
-  var tvBonus=(isNatTV&&weights.tvOn)?weights.tvBonus:0;
-  var totalScore=combined+lev+tvBonus;
+  var tvBonus=(isNat&&document.getElementById('w-tv-on').checked)?+document.getElementById('w-tv-bonus').value||0:0;
+  var total=combined+lev+tvBonus;
   return{
     homeAbbr:hd.abbr,awayAbbr:ad.abbr,homeEspn:hd.espn,awayEspn:ad.espn,
     homeLogo:home.team.logo,awayLogo:away.team.logo,
     homeElo:hd.elo,awayElo:ad.elo,combined:combined,
     homeDots:teamQ(hd.elo),awayDots:teamQ(ad.elo),
-    totalStars:gameStars(totalScore),flame:totalScore>CMAX,
-    time:timeStr,hr:hr,dow:utc.getDay(),dateLabel:dateLabel,
-    watch:watch,isNatTV:isNatTV,lev:lev,levLabel:levLabel,tvBonus:tvBonus,
-    totalScore:totalScore,score:totalScore+Math.random()*10
+    totalStars:gameStars(total),flame:total>CMAX,
+    time:fmtTime(utc,tz),hr:gameHr(utc,tz),dow:utc.getDay(),
+    dateLabel:fmtDateShort(utc),
+    watch:watch,isNat:isNat,lev:lev,levLbl:levLbl,tvBonus:tvBonus,
+    total:total,score:total+Math.random()*10
   };
 }
-
 function applyFilters(games){
-  if(weights.broadcastFilter==='national')games=games.filter(function(g){return g.isNatTV;});
-  else if(weights.broadcastFilter==='leaguepass')games=games.filter(function(g){return!g.isNatTV;});
-  if(weights.dayFilter==='weekday')games=games.filter(function(g){return g.dow>=1&&g.dow<=5;});
-  else if(weights.dayFilter==='weekend')games=games.filter(function(g){return g.dow===0||g.dow===6;});
-  if(weights.timeFilterOn){
-    var mn=timeToHr(weights.minTime),mx=timeToHr(weights.maxTime);
+  if(bcastVal==='national')games=games.filter(function(g){return g.isNat;});
+  else if(bcastVal==='lp')games=games.filter(function(g){return!g.isNat;});
+  if(dayVal==='weekday')games=games.filter(function(g){return g.dow>=1&&g.dow<=5;});
+  else if(dayVal==='weekend')games=games.filter(function(g){return g.dow===0||g.dow===6;});
+  var dtOn=document.getElementById('w-dt-on').checked;
+  if(dtOn&&document.getElementById('w-time-on').checked){
+    var mn=toHr(document.getElementById('w-min-time').value);
+    var mx=toHr(document.getElementById('w-max-time').value);
     games=games.filter(function(g){return g.hr>=mn&&g.hr<=mx;});
   }
   return games;
 }
-
-function renderGameCards(games,el,showDate){
+function renderCards(games,showDate){
+  var el=document.getElementById('games-content');
+  if(!games.length){el.innerHTML='<div class="no-games">no games match your filters</div>';return;}
   el.innerHTML=games.map(function(g,i){
     var rank=i+1;
-    var rankColor=rank===1?'#BA7517':rank===2?'#888780':rank===3?'#854F0B':'var(--text-3)';
-    var badge=g.isNatTV?'<span class="g-badge badge-tv">'+g.watch+'</span>':'<span class="g-badge badge-lp">League Pass</span>';
+    var rc=rank===1?'#BA7517':rank===2?'#888780':rank===3?'#854F0B':'var(--text-3)';
+    var badge=g.isNat?'<span class="g-badge badge-tv">'+g.watch+'</span>':'<span class="g-badge badge-lp">League Pass</span>';
     var bonuses='';
-    if(g.lev>0)bonuses+='<div class="g-bonuses">+'+g.lev+' '+g.levLabel+'</div>';
-    if(g.tvBonus>0)bonuses+='<div class="g-bonuses">+'+g.tvBonus+' national tv</div>';
-    var dateTag=showDate?'<span class="game-date-label">'+g.dateLabel+'</span>':'';
+    if(g.lev>0)bonuses+='<div class="g-bonuses">+'+g.lev+' '+g.levLbl+'</div>';
+    if(g.tvBonus>0)bonuses+='<div class="g-bonuses">+'+g.tvBonus+' natl tv</div>';
+    var datePart=showDate
+      ?'<span class="game-date-badge">'+g.dateLabel+'</span>'
+      :'<span class="game-date-single">'+g.time+'</span>';
     return'<div class="game-card">'+
       '<div class="game-card-header">'+
         '<span class="rank-dot" style="background:'+g.dotColor+'"></span>'+
-        '<span class="game-rank-num" style="color:'+rankColor+'">#'+rank+'</span>'+
-        dateTag+
+        '<span class="game-rank-num" style="color:'+rc+'">#'+rank+'</span>'+
+        datePart+
       '</div>'+
       '<div class="game-teams">'+
         '<div class="g-team"><img src="'+(g.awayLogo||logo(g.awayEspn))+'" alt="'+g.awayAbbr+'"/><div class="g-abbr">'+g.awayAbbr+'</div><div class="g-elo">'+g.awayElo+'</div><div class="g-dots">'+dotsHtml(g.awayDots)+'</div></div>'+
         '<div class="g-mid">'+
           '<div class="g-at">at</div>'+
-          '<div class="g-time">'+g.time+'</div>'+
+          (showDate?'<div class="g-time">'+g.time+'</div>':'')+
           badge+
           '<div class="g-stars">'+starsHtml(g.totalStars,g.flame)+'</div>'+
-          '<div class="g-combined">'+g.totalScore+'</div>'+
+          '<div class="g-combined">'+g.total+'</div>'+
           bonuses+
         '</div>'+
         '<div class="g-team"><img src="'+(g.homeLogo||logo(g.homeEspn))+'" alt="'+g.homeAbbr+'"/><div class="g-abbr">'+g.homeAbbr+'</div><div class="g-elo">'+g.homeElo+'</div><div class="g-dots">'+dotsHtml(g.homeDots)+'</div></div>'+
@@ -768,117 +674,82 @@ function renderGameCards(games,el,showDate){
   }).join('');
 }
 
-// Single day
-function loadGames(){
-  var el=document.getElementById('games-content');
-  el.innerHTML='<div class="loading">loading games...</div>';
-  document.getElementById('games-note').textContent='';
-  document.getElementById('date-picker').value=inputVal(currentDate);updateDOW();
+function applyAndLoad(){
+  var dtOn=document.getElementById('w-dt-on').checked;
+  var rangeOn=dtOn&&document.getElementById('w-range-on').checked;
+  if(rangeOn)loadRange();else loadSingle();
+}
+
+function loadSingle(){
+  var dp=document.getElementById('date-picker').value;
+  if(dp){var p=dp.split('-');currentDate=new Date(+p[0],+p[1]-1,+p[2]);}
   var tz=document.getElementById('tz-select').value;
-  fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates='+dateStr(currentDate))
+  var el=document.getElementById('games-content');
+  el.innerHTML='<div class="loading">loading...</div>';
+  document.getElementById('games-note').textContent='';
+  document.getElementById('games-title').textContent=fmtDateShort(currentDate);
+  fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates='+dstr(currentDate))
     .then(function(r){return r.json();})
     .then(function(data){
       var events=data.events||[];
-      if(!events.length){el.innerHTML='<div class="no-games">no games on this date</div>';lastGames=[];return;}
+      if(!events.length){el.innerHTML='<div class="no-games">no games on this date</div>';lastGames=[];buildChart([]);return;}
       var games=events.map(function(ev){return processEvent(ev,tz);});
       games=applyFilters(games);
-      if(!games.length){el.innerHTML='<div class="no-games">no games match your filters</div>';lastGames=[];return;}
+      if(!games.length){el.innerHTML='<div class="no-games">no games match your filters</div>';lastGames=[];buildChart([]);return;}
       games.sort(function(a,b){return b.score-a.score;});
       games.forEach(function(g,i){g.dotColor=DOT_COLORS[i%DOT_COLORS.length];});
-      lastGames=games;
-      renderGameCards(games,el,false);
-      document.getElementById('games-note').textContent='ranked by your elo ratings';
+      lastGames=games;renderCards(games,false);
+      document.getElementById('games-note').textContent=games.length+' game'+(games.length!==1?'s':'')+' · ranked by elo';
+      buildChart(games);
     })
     .catch(function(){el.innerHTML='<div class="no-games">couldn\'t load games</div>';});
 }
 
-// Date range
-function loadRangeGames(){
-  saveWeights();
-  var fromVal=document.getElementById('w-range-from').value;
-  var toVal=document.getElementById('w-range-to').value;
-  if(!fromVal||!toVal){alert('Please set both from and to dates.');return;}
-  var fromParts=fromVal.split('-'),toParts=toVal.split('-');
-  var fromDate=new Date(+fromParts[0],+fromParts[1]-1,+fromParts[2]);
-  var toDate=new Date(+toParts[0],+toParts[1]-1,+toParts[2]);
-  if(fromDate>toDate){alert('From date must be before to date.');return;}
-  var days=(toDate-fromDate)/(1000*60*60*24)+1;
-  if(days>30){alert('Maximum range is 30 days.');return;}
-
-  // Switch to games tab and show loading
-  switchTab('games');
-  var el=document.getElementById('games-content');
-  el.innerHTML='<div class="loading">fetching '+days+' days of games...</div>';
-  document.getElementById('games-note').textContent='';
-  lastGames=[];
-
+function loadRange(){
+  var fv=document.getElementById('w-from').value,tv=document.getElementById('w-to').value;
+  if(!fv||!tv){alert('Set both from and to dates.');return;}
+  var fp=fv.split('-'),tp=tv.split('-');
+  var from=new Date(+fp[0],+fp[1]-1,+fp[2]),to=new Date(+tp[0],+tp[1]-1,+tp[2]);
+  if(from>to){alert('From must be before to.');return;}
+  var days=Math.round((to-from)/86400000)+1;
+  if(days>30){alert('Max 30 days.');return;}
   var tz=document.getElementById('tz-select').value;
-  var allGames=[];
-  var fetched=0;
-  var dates=[];
-  for(var d=new Date(fromDate);d<=toDate;d.setDate(d.getDate()+1)){
-    dates.push(dateStr(new Date(d)));
-  }
-
-  function fetchNext(i){
+  var el=document.getElementById('games-content');
+  el.innerHTML='<div class="loading">fetching '+days+' days...</div>';
+  document.getElementById('games-note').textContent='';
+  document.getElementById('games-title').textContent=MONTHS[from.getMonth()]+' '+from.getDate()+' – '+MONTHS[to.getMonth()]+' '+to.getDate();
+  var all=[],dates=[];
+  for(var d=new Date(from);d<=to;d.setDate(d.getDate()+1))dates.push(dstr(new Date(d)));
+  function next(i){
     if(i>=dates.length){
-      // All fetched — filter, sort, render
-      var games=applyFilters(allGames);
-      if(!games.length){el.innerHTML='<div class="no-games">no games match your filters in this range</div>';return;}
+      var games=applyFilters(all);
       games.sort(function(a,b){return b.score-a.score;});
       games.forEach(function(g,idx){g.dotColor=DOT_COLORS[idx%DOT_COLORS.length];});
-      lastGames=games;
-      renderGameCards(games,el,true);
-      document.getElementById('games-note').textContent=games.length+' games across '+dates.length+' days, ranked by elo';
-      return;
+      lastGames=games;renderCards(games,true);
+      document.getElementById('games-note').textContent=games.length+' games · '+days+' days · ranked by elo';
+      buildChart(games);return;
     }
-    el.innerHTML='<div class="loading-small">loading '+dates[i]+' ('+( i+1)+'/'+dates.length+')...</div>';
+    el.innerHTML='<div class="loading-sm">'+dates[i]+' ('+(i+1)+'/'+dates.length+')</div>';
     fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates='+dates[i])
       .then(function(r){return r.json();})
-      .then(function(data){
-        (data.events||[]).forEach(function(ev){allGames.push(processEvent(ev,tz));});
-        fetchNext(i+1);
-      })
-      .catch(function(){fetchNext(i+1);});
+      .then(function(data){(data.events||[]).forEach(function(ev){all.push(processEvent(ev,tz));});next(i+1);})
+      .catch(function(){next(i+1);});
   }
-  fetchNext(0);
+  next(0);
 }
 
-// ── CHARTS ───────────────────────────────────────────
+// ── CHART ───────────────────────────────────────────
 var scatterInst=null;
-function destroyCharts(){if(scatterInst){scatterInst.destroy();scatterInst=null;}}
-
-function renderCharts(){
-  var el=document.getElementById('charts-content');
-  if(!lastGames.length){el.innerHTML='<div class="no-games" style="padding:3rem 0">go to the games tab first to load games</div>';return;}
-  destroyCharts();
-  var legend=lastGames.map(function(g,i){
-    return'<div class="legend-item"><span class="legend-dot" style="background:'+g.dotColor+'"></span>'+(i+1)+'. '+g.awayAbbr+' @ '+g.homeAbbr+'</div>';
+function buildChart(games){
+  var wrap=document.getElementById('chart-wrap');
+  if(scatterInst){scatterInst.destroy();scatterInst=null;}
+  if(!games||!games.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  // Legend
+  document.getElementById('chart-legend').innerHTML=games.map(function(g,i){
+    return'<div class="leg-item"><span class="leg-dot" style="background:'+g.dotColor+'"></span>'+(i+1)+'. '+g.awayAbbr+' @ '+g.homeAbbr+'</div>';
   }).join('');
-  el.innerHTML=
-    '<div class="chart-card">'+
-      '<div class="chart-label">matchup map — away elo (x) · home elo (y)</div>'+
-      '<canvas id="scatter-canvas"></canvas>'+
-      '<div class="chart-legend">'+legend+'</div>'+
-    '</div>';
-
-  // Make canvas square using JS after render
-  var card=el.querySelector('.chart-card');
-  setTimeout(function(){
-    var cvs=document.getElementById('scatter-canvas');
-    if(!cvs)return;
-    var w=card.clientWidth-32; // subtract padding
-    cvs.style.width=w+'px';
-    cvs.style.height=w+'px';
-    cvs.width=w*window.devicePixelRatio;
-    cvs.height=w*window.devicePixelRatio;
-    buildScatter(cvs);
-  },60);
-}
-
-function buildScatter(el){
-  var AMIN=900,AMAX=1550,MED=1200;
-  var RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
+  var AMIN=900,AMAX=1550,MED=1200,RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
   var qb=[RMIN+RR*0.2,RMIN+RR*0.4,RMIN+RR*0.6,RMIN+RR*0.8];
   function lpts(S){
     var pts=[];
@@ -889,26 +760,34 @@ function buildScatter(el){
     pts.sort(function(a,b){return a.x-b.x;});return pts;
   }
   function lds(pts,c,d,w){return{type:'scatter',data:pts,borderColor:c,backgroundColor:'transparent',pointRadius:0,pointHoverRadius:0,showLine:true,borderDash:d,borderWidth:w,label:'_'};}
-  var dots=lastGames.map(function(g){
+  var dots=games.map(function(g){
     return{type:'scatter',data:[{x:g.awayElo,y:g.homeElo}],
       backgroundColor:g.dotColor,borderColor:g.dotColor,pointBackgroundColor:g.dotColor,pointBorderColor:g.dotColor,
-      pointRadius:7,pointHoverRadius:9,showLine:false,label:'_'};
+      pointRadius:8,pointHoverRadius:11,showLine:false,label:'_'};
   });
   var lines=[
     lds([{x:AMIN,y:AMIN},{x:AMAX,y:AMAX}],'rgba(100,100,100,0.5)',[7,3],1.5),
     lds([{x:MED,y:AMIN},{x:MED,y:AMAX}],'rgba(100,100,100,0.3)',[4,4],1),
     lds([{x:AMIN,y:MED},{x:AMAX,y:MED}],'rgba(100,100,100,0.3)',[4,4],1),
   ].concat(qb.map(function(S){return lds(lpts(S),'rgba(186,117,23,0.35)',[3,4],1);}));
-
-  scatterInst=new Chart(el,{
-    type:'scatter',
-    data:{datasets:dots.concat(lines)},
+  // Size canvas: slightly wider than tall (85% height)
+  var cvs=document.getElementById('scatter-canvas');
+  var cw=wrap.clientWidth-24;
+  var ch=Math.round(cw*0.88);
+  cvs.style.width=cw+'px';cvs.style.height=ch+'px';
+  cvs.width=cw*(window.devicePixelRatio||1);cvs.height=ch*(window.devicePixelRatio||1);
+  scatterInst=new Chart(cvs,{
+    type:'scatter',data:{datasets:dots.concat(lines)},
     options:{
-      responsive:false, // we set size manually
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var g=lastGames[c.datasetIndex];if(!g)return'';return g.awayAbbr+' @ '+g.homeAbbr+' (away:'+c.parsed.x+' home:'+c.parsed.y+')';}}}},
+      responsive:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var g=games[c.datasetIndex];if(!g)return'';return g.awayAbbr+' @ '+g.homeAbbr+' ('+c.parsed.x+'/'+c.parsed.y+')';}}}},
       scales:{
-        x:{type:'linear',min:AMIN,max:AMAX,title:{display:true,text:'away elo',color:'#888780',font:{size:10}},grid:{color:'rgba(180,178,169,0.25)'},ticks:{color:'#888780',font:{size:10}}},
-        y:{type:'linear',min:AMIN,max:AMAX,title:{display:true,text:'home elo',color:'#888780',font:{size:10}},grid:{color:'rgba(180,178,169,0.25)'},ticks:{color:'#888780',font:{size:10}}}
+        x:{type:'linear',min:AMIN,max:AMAX,
+          title:{display:true,text:'away elo',color:'#888780',font:{size:11}},
+          grid:{color:'rgba(180,178,169,0.25)'},ticks:{color:'#888780',font:{size:11},maxTicksLimit:6}},
+        y:{type:'linear',min:AMIN,max:AMAX,
+          title:{display:true,text:'home elo',color:'#888780',font:{size:11}},
+          grid:{color:'rgba(180,178,169,0.25)'},ticks:{color:'#888780',font:{size:11},maxTicksLimit:6}}
       }
     }
   });
@@ -916,30 +795,23 @@ function buildScatter(el){
 
 // ── TABS ────────────────────────────────────────────
 function switchTab(tab){
-  ['ranker','games','weights','charts'].forEach(function(t){
+  ['ranker','games'].forEach(function(t){
     document.getElementById('tab-'+t).className='tab'+(t===tab?' active':'');
-    document.getElementById('view-'+t).style.display=t===tab?'':'none';
+    document.getElementById('view-'+t).style.display=t===tab?'block':'none';
   });
-  if(tab==='games')loadGames();
-  if(tab==='charts')renderCharts();
-  if(tab==='weights')updateWeightStates();
-  if(tab!=='charts')destroyCharts();
+  if(tab==='games'&&!lastGames.length)loadSingle();
 }
 
 // ── INIT ────────────────────────────────────────────
-initRatings();
-profiles=loadProfiles();
-initWeights();
-initRound();
-render();
-document.getElementById('date-picker').value=inputVal(currentDate);
-updateDOW();
-// Pre-fill range dates to today + 7 days
+initRatings();initRound();render();
+document.getElementById('date-picker').value=ival(currentDate);
+// Pre-fill range dates
 (function(){
-  var today=new Date(),next=new Date();next.setDate(today.getDate()+6);
-  document.getElementById('w-range-from').value=inputVal(today);
-  document.getElementById('w-range-to').value=inputVal(next);
+  var t=new Date(),n=new Date();n.setDate(t.getDate()+6);
+  document.getElementById('w-from').value=ival(t);
+  document.getElementById('w-to').value=ival(n);
 })();
+updateStates();
 </script>
 </body>
 </html>
