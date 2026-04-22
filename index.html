@@ -91,9 +91,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .game-date-badge{font-family:var(--mono);font-size:11px;color:var(--text-2);background:var(--bg);border:.5px solid var(--border);padding:3px 8px;border-radius:var(--radius-sm);margin-left:auto;font-weight:500}
 .game-date-single{font-family:var(--mono);font-size:11px;color:var(--text-3);margin-left:auto}
 .game-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;text-align:center}
-.g-team img{width:54px;height:54px;object-fit:contain;display:block;margin:0 auto 5px}
-.g-abbr{font-size:15px;font-weight:500;color:var(--text)}
-.g-elo{font-family:var(--mono);font-size:11px;color:var(--amber);margin-top:2px}
+.g-team img{width:62px;height:62px;object-fit:contain;display:block;margin:0 auto 6px}
+.g-abbr{font-size:16px;font-weight:500;color:var(--text)}
+.g-elo{font-family:var(--mono);font-size:12px;color:var(--amber);margin-top:2px}
 .g-dots{margin-top:3px}
 .g-mid{text-align:center}
 .g-at{font-size:10px;color:var(--text-3);font-family:var(--mono);letter-spacing:.5px}
@@ -160,8 +160,8 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 /* chart */
 .chart-wrap{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:11px 12px}
 /* star picker */
-.star-picker{display:flex;gap:2px;cursor:pointer}
-.star-picker span{font-size:18px;color:var(--border);transition:color .1s;padding:0 1px}
+.star-picker{display:flex;gap:1px;cursor:pointer}
+.star-picker span{font-size:15px;color:var(--border);transition:color .1s;padding:0}
 .star-picker span.lit{color:var(--amber)}
 /* dot picker (green) */
 .dot-picker{display:flex;gap:4px;cursor:pointer;align-items:center}
@@ -406,23 +406,23 @@ input:checked+.tog-track::after{transform:translateX(14px)}
         <div class="nest off" id="stars-nest">
           <!-- Stars: min and max on one row -->
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);flex-shrink:0">game ★</span>
-            <div class="star-picker" id="stars-min-picker" data-val="1">
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);width:36px;flex-shrink:0">game ★</span>
+            <div class="star-picker" id="stars-min-picker" data-val="1" style="flex:1;justify-content:space-between">
               <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
             </div>
             <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);flex-shrink:0">–</span>
-            <div class="star-picker" id="stars-max-picker" data-val="5">
+            <div class="star-picker" id="stars-max-picker" data-val="5" style="flex:1;justify-content:space-between">
               <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
             </div>
           </div>
           <!-- Team dots: min and max on one row -->
           <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);flex-shrink:0">team ●</span>
-            <div class="dot-picker" id="dots-min-picker" data-val="1">
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);width:36px;flex-shrink:0">teams ●</span>
+            <div class="dot-picker" id="dots-min-picker" data-val="1" style="flex:1;justify-content:space-between">
               <span data-d="1"></span><span data-d="2"></span><span data-d="3"></span><span data-d="4"></span><span data-d="5"></span>
             </div>
             <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);flex-shrink:0">–</span>
-            <div class="dot-picker" id="dots-max-picker" data-val="5">
+            <div class="dot-picker" id="dots-max-picker" data-val="5" style="flex:1;justify-content:space-between">
               <span data-d="1"></span><span data-d="2"></span><span data-d="3"></span><span data-d="4"></span><span data-d="5"></span>
             </div>
           </div>
@@ -728,6 +728,7 @@ function updateStates(){
 function resetFilters(){
   document.getElementById('w-dt-on').checked=true;
   setDateMode('single');
+  goToday();
   document.getElementById('w-time-on').checked=false;
   document.getElementById('w-min-time').value='00:00';
   document.getElementById('w-max-time').value='23:59';
@@ -844,22 +845,11 @@ function getTeamData(name){
   return{elo:1200,abbr:name.substring(0,3).toUpperCase(),espn:''};
 }
 // Series score cache: keyed by sorted-team-pair + date
-var seriesCache={};
-var KEY_SERIES='nba_series_cache';
-function loadSeriesCache(){try{var s=localStorage.getItem(KEY_SERIES);if(s)seriesCache=JSON.parse(s);}catch(e){}}
-function saveSeriesCache(){try{localStorage.setItem(KEY_SERIES,JSON.stringify(seriesCache));}catch(e){}}
-function clearSeriesCache(){seriesCache={};try{localStorage.removeItem(KEY_SERIES);}catch(e){}}
-
-function getSeriesKey(abbrA,abbrB,dateStr){
-  return [abbrA,abbrB].sort().join('-')+'-'+dateStr;
-}
-
 function processEvent(ev,tz){
   var comp=ev.competitions[0];
   var home=comp.competitors[0],away=comp.competitors[1];
   var hd=getTeamData(home.team.displayName),ad=getTeamData(away.team.displayName);
   var combined=hd.elo+ad.elo,utc=new Date(ev.date);
-  var dateKey=utc.getFullYear()+pad(utc.getMonth()+1)+pad(utc.getDate());
   var watch='League Pass',isNat=false;
   if(comp.broadcasts&&comp.broadcasts.length){
     var ns=comp.broadcasts[0].names||[];
@@ -869,51 +859,52 @@ function processEvent(ev,tz){
       if(['ABC','ESPN','NBC','Prime Video','Peacock','TNT','TBS'].indexOf(n)>=0){watch=n;isNat=true;break;}
     }
   }
+
+  // ── SERIES SCORE ──────────────────────────────────
+  // Approach: read wins directly from ESPN series data, keyed by team id.
+  // ESPN always reports current cumulative wins, so for scheduled games these
+  // are the pre-game wins. For completed/in-progress games they include tonight,
+  // so we subtract 1 from the winner.
+  // We store awayWins-homeWins in a fixed format tied to ESPN competitor order,
+  // which is consistent per matchup regardless of home/away display.
   var levOn=document.getElementById('w-lev-on').checked;
   var lev=0,levLbl='';
-  var gameNum=null,seriesScore=null,seriesKnown=false;
+  var gameNum=null,awaySerWins=null,homeSerWins=null;
 
   if(comp.series){
     var ser=comp.series;
-    // Match series competitors by team id (compare as strings to avoid type mismatch)
-    var rawHW=0,rawAW=0;
+    // Read wins indexed by ESPN team id → wins
+    var winsByTeamId={};
     (ser.competitors||[]).forEach(function(c){
-      if(String(c.id)===String(home.team.id))rawHW=+(c.wins||0);
-      if(String(c.id)===String(away.team.id))rawAW=+(c.wins||0);
+      winsByTeamId[String(c.id)]=+(c.wins||0);
     });
-    var gameStatus=(comp.status||{}).type||{};
-    var isComplete=!!(gameStatus.completed||gameStatus.name==='STATUS_FINAL');
-    var isInProgress=gameStatus.name==='STATUS_IN_PROGRESS'||gameStatus.name==='STATUS_HALFTIME';
-    var serKey=getSeriesKey(hd.abbr,ad.abbr,dateKey);
-    if(!seriesCache[serKey]){
-      var preHW=rawHW,preAW=rawAW;
-      if(isComplete||isInProgress){
-        var hScore=+(home.score||0),aScore=+(away.score||0);
-        if(hScore>aScore&&rawHW>0)preHW=rawHW-1;
-        else if(aScore>hScore&&rawAW>0)preAW=rawAW-1;
-      }
-      seriesCache[serKey]={hw:preHW,aw:preAW};
-      saveSeriesCache();
+    var rawAW=winsByTeamId[String(away.team.id)]||0;
+    var rawHW=winsByTeamId[String(home.team.id)]||0;
+
+    // Adjust for completed/in-progress: subtract tonight's win from the winner
+    var st=(comp.status||{}).type||{};
+    var done=!!(st.completed||st.name==='STATUS_FINAL');
+    var live=st.name==='STATUS_IN_PROGRESS'||st.name==='STATUS_HALFTIME';
+    if(done||live){
+      var hs=+(home.score||0),as=+(away.score||0);
+      if(hs>as&&rawHW>0)rawHW--;
+      else if(as>hs&&rawAW>0)rawAW--;
+      // tied score (shouldn't happen in basketball final) → no adjustment
     }
-    var hw=seriesCache[serKey].hw;
-    var aw=seriesCache[serKey].aw;
-    gameNum=hw+aw+1;
-    seriesScore=hw+'-'+aw;
-    seriesKnown=true;
-    // Only mark as unknown if this is a future game AND we had no prior cache
-    // (i.e. the cache was freshly created from raw API data with 0 wins).
-    // If we have cached data, trust it regardless of date.
-    // The "?-?" case only applies when series hasn't started yet (gameNum===1 with future date)
-    // but we fetched it fresh — in that case series will be 0-0 which is correct.
-    // We never blank out gameNum here; always show game number.
-    if(levOn&&seriesKnown){
-      var total_games=hw+aw;
-      if(hw===3||aw===3){lev=+document.getElementById('w-elim').value||0;levLbl='elim';}
-      else if(total_games===6){lev=+document.getElementById('w-game7').value||0;levLbl='game 7';}
-      else if(hw===aw&&hw>0){lev=+document.getElementById('w-tied').value||0;levLbl='tied '+hw+'-'+aw;}
-      else if(total_games===0){lev=+document.getElementById('w-game1').value||0;levLbl='game 1';}
+
+    awaySerWins=rawAW;
+    homeSerWins=rawHW;
+    gameNum=rawAW+rawHW+1;
+
+    if(levOn){
+      var tot=rawAW+rawHW;
+      if(rawAW===3||rawHW===3){lev=+document.getElementById('w-elim').value||0;levLbl='elim';}
+      else if(tot===6){lev=+document.getElementById('w-game7').value||0;levLbl='game 7';}
+      else if(rawAW===rawHW&&rawAW>0){lev=+document.getElementById('w-tied').value||0;levLbl='tied';}
+      else if(tot===0){lev=+document.getElementById('w-game1').value||0;levLbl='game 1';}
     }
   }
+
   var tvBonus=(isNat&&document.getElementById('w-tv-on').checked)?+document.getElementById('w-tv-bonus').value||0:0;
   var total=combined+lev+tvBonus;
   return{
@@ -925,7 +916,7 @@ function processEvent(ev,tz){
     time:fmtTime(utc,tz),hr:gameHr(utc,tz),dow:utc.getDay(),
     dateLabel:fmtDateShort(utc),utcMs:utc.getTime(),
     watch:watch,isNat:isNat,lev:lev,levLbl:levLbl,tvBonus:tvBonus,
-    gameNum:gameNum,seriesScore:seriesScore,
+    gameNum:gameNum,awaySerWins:awaySerWins,homeSerWins:homeSerWins,
     total:total,score:total+Math.random()*10
   };
 }
@@ -989,13 +980,14 @@ function renderCards(games,showDate){
       '<div style="font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text);text-align:center;margin:2px 0">'+g.time+'</div>';
     // Series info block
     var seriesBlock='';
-    if(g.gameNum||g.seriesScore){
-      var gnLabel=g.gameNum?'game '+g.gameNum:'';
-      var scoreLabel=g.seriesScore||'';
+    if(g.gameNum!==null&&g.gameNum!==undefined){
+      // awaySerWins and homeSerWins are always keyed to card's away/home teams
+      var scoreStr=(g.awaySerWins!==null&&g.homeSerWins!==null)
+        ?(g.awaySerWins+'-'+g.homeSerWins):'';
       seriesBlock=
         '<div style="margin-top:4px;padding-top:4px;border-top:.5px solid var(--border-light)">'+
-        (gnLabel?'<div style="font-family:var(--mono);font-size:10px;color:var(--amber);text-align:center;font-weight:600">'+gnLabel+'</div>':'')+
-        (scoreLabel?'<div style="font-family:var(--mono);font-size:11px;color:var(--text-2);text-align:center">series '+scoreLabel+'</div>':'')+
+        '<div style="font-family:var(--mono);font-size:10px;color:var(--amber);text-align:center;font-weight:600">game '+g.gameNum+'</div>'+
+        (scoreStr?'<div style="font-family:var(--mono);font-size:11px;color:var(--text-2);text-align:center">'+g.awayAbbr+' '+g.awaySerWins+' – '+g.homeSerWins+' '+g.homeAbbr+'</div>':'')+ 
         '</div>';
     }
     return'<div class="game-card">'+
@@ -1204,7 +1196,6 @@ function switchTab(tab){
 
 // ── INIT ────────────────────────────────────────────
 initRatings();initRound();render();
-loadSeriesCache();
 // Star/dot picker wiring
 initPicker('stars-min-picker','data-s',setStarPicker);
 initPicker('stars-max-picker','data-s',setStarPicker);
