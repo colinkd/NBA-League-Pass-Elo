@@ -147,8 +147,6 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 .nest{margin-top:6px;padding-left:10px;border-left:2px solid var(--border-light);transition:opacity .2s}
 .nest.off{opacity:.35;pointer-events:none}
 /* network pills (blue when on) */
-.team-bubble{font-family:var(--mono);font-size:10px;padding:3px 8px;border:.5px solid var(--blue);border-radius:20px;cursor:pointer;color:var(--blue);background:var(--blue-light);display:flex;align-items:center;gap:4px}
-.team-bubble:hover{opacity:.8}
 .net-pill{font-family:var(--mono);font-size:10px;padding:3px 7px;border:.5px solid var(--border);border-radius:20px;cursor:pointer;color:var(--text-2);background:var(--bg);transition:all .12s}
 .net-pill.on{background:var(--blue);color:#fff;border-color:var(--blue)}
 /* team filter */
@@ -287,7 +285,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
             <div class="fw-lbl">Day of week</div>
             <div class="pills" id="day-filter">
               <div class="pill on" data-val="all" onclick="setDay('all')">all</div>
-              <div class="pill" data-val="weekday" onclick="setDay('weekday')">weeknights</div>
+              <div class="pill" data-val="weekday" onclick="setDay('weekday')">weekdays</div>
               <div class="pill" data-val="weekend" onclick="setDay('weekend')">weekends</div>
             </div>
           </div>
@@ -366,41 +364,10 @@ input:checked+.tog-track::after{transform:translateX(14px)}
       <!-- TEAM FILTER -->
       <div class="fs">
         <div class="fs-head"><div class="fs-title">team filter</div></div>
-        <select class="team-sel" id="team-filter" onchange="addTeamFilter(this)">
-          <option value="">add a team...</option>
-        </select>
-        <div id="team-bubbles" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px"></div>
-      </div>
-
-      <!-- MATCHUP QUALITY / TEAM QUALITY FILTER -->
-      <div class="fs">
-        <div class="fs-head">
-          <div class="fs-title">matchup quality</div>
-          <label class="tog"><input type="checkbox" id="w-stars-on" onchange="updateStates()"/><span class="tog-track"></span></label>
-        </div>
-        <div class="nest off" id="stars-nest">
-          <!-- Stars: min and max on one row -->
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);width:36px;flex-shrink:0">game</span>
-            <div class="star-picker" id="stars-min-picker" data-val="1" style="flex:1;justify-content:space-between">
-              <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
-            </div>
-            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);flex-shrink:0">–</span>
-            <div class="star-picker" id="stars-max-picker" data-val="5" style="flex:1;justify-content:space-between">
-              <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
-            </div>
-          </div>
-          <!-- Team dots: min and max on one row -->
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);width:36px;flex-shrink:0">teams</span>
-            <div class="dot-picker" id="dots-min-picker" data-val="1" style="flex:1;justify-content:space-between">
-              <span data-d="1"></span><span data-d="2"></span><span data-d="3"></span><span data-d="4"></span><span data-d="5"></span>
-            </div>
-            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);flex-shrink:0">–</span>
-            <div class="dot-picker" id="dots-max-picker" data-val="5" style="flex:1;justify-content:space-between">
-              <span data-d="1"></span><span data-d="2"></span><span data-d="3"></span><span data-d="4"></span><span data-d="5"></span>
-            </div>
-          </div>
+        <div class="fw">
+          <select class="team-sel" id="team-filter">
+            <option value="">all teams</option>
+          </select>
         </div>
       </div>
 
@@ -426,6 +393,38 @@ input:checked+.tog-track::after{transform:translateX(14px)}
           <div class="fw">
             <div class="fw-lbl">Game 7</div>
             <input type="number" class="fw-num" id="w-game7" value="100"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- MATCHUP QUALITY / TEAM QUALITY FILTER -->
+      <div class="fs">
+        <div class="fs-head">
+          <div class="fs-title">matchup quality</div>
+          <label class="tog"><input type="checkbox" id="w-stars-on" onchange="updateStates()"/><span class="tog-track"></span></label>
+        </div>
+        <div class="nest off" id="stars-nest">
+          <!-- Stars: min and max on one row -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);width:36px;flex-shrink:0">game ★</span>
+            <div class="star-picker" id="stars-min-picker" data-val="1" style="flex:1;justify-content:space-between">
+              <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
+            </div>
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);flex-shrink:0">–</span>
+            <div class="star-picker" id="stars-max-picker" data-val="5" style="flex:1;justify-content:space-between">
+              <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
+            </div>
+          </div>
+          <!-- Team dots: min and max on one row -->
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);width:36px;flex-shrink:0">teams ●</span>
+            <div class="dot-picker" id="dots-min-picker" data-val="1" style="flex:1;justify-content:space-between">
+              <span data-d="1"></span><span data-d="2"></span><span data-d="3"></span><span data-d="4"></span><span data-d="5"></span>
+            </div>
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);flex-shrink:0">–</span>
+            <div class="dot-picker" id="dots-max-picker" data-val="5" style="flex:1;justify-content:space-between">
+              <span data-d="1"></span><span data-d="2"></span><span data-d="3"></span><span data-d="4"></span><span data-d="5"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -555,54 +554,47 @@ function confirmReset(){
 
 function rankByRecord(){
   document.getElementById('saved-note').textContent='fetching standings...';
-  // ESPN standings API uses different abbreviations than scoreboard API.
-  // Map ESPN standings abbr → our TEAMS abbr
-  var ESPN_ABBR_MAP={
-    'NO':'NOP','GS':'GSW','SA':'SAS','NY':'NYK','UTAH':'UTA',
-    'WSH':'WAS','BKN':'BKN','CHA':'CHA','MEM':'MEM','OKC':'OKC',
-    'PHX':'PHX','PHI':'PHI','NOP':'NOP'
-  };
-  function normalizeAbbr(abbr){return ESPN_ABBR_MAP[abbr]||abbr;}
-  fetch('https://site.api.espn.com/apis/v2/sports/basketball/nba/standings')
-    .then(function(r){if(!r.ok)throw new Error('bad');return r.json();})
-    .then(function(data){
-      var entries=[];
-      var groups=data.children||[];
-      groups.forEach(function(conf){
-        var ents=((conf.standings||{}).entries)||[];
-        ents.forEach(function(e){
-          var wins=0,losses=0;
-          var abbr=normalizeAbbr((e.team||{}).abbreviation||'');
-          (e.stats||[]).forEach(function(s){
-            if(s.name==='wins')wins=+s.value||0;
-            if(s.name==='losses')losses=+s.value||0;
+  // Try both common ESPN standings endpoints
+  var urls=[
+    'https://site.api.espn.com/apis/v2/sports/basketball/nba/standings',
+    'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/standings'
+  ];
+  function tryUrl(i){
+    if(i>=urls.length){document.getElementById('saved-note').textContent='could not load standings';return;}
+    fetch(urls[i])
+      .then(function(r){if(!r.ok)throw new Error('bad');return r.json();})
+      .then(function(data){
+        var entries=[];
+        // Handle both response shapes
+        var groups=data.children||data.standings||[];
+        if(data.standings&&data.standings.entries)groups=[data];
+        groups.forEach(function(g){
+          var ents=((g.standings||g).entries)||[];
+          ents.forEach(function(e){
+            var wins=0,losses=0,abbr=(e.team||{}).abbreviation||'';
+            (e.stats||[]).forEach(function(s){
+              if(s.name==='wins'||s.abbreviation==='W')wins=+s.value||0;
+              if(s.name==='losses'||s.abbreviation==='L')losses=+s.value||0;
+            });
+            if(abbr)entries.push({abbr:abbr,pct:wins+losses>0?wins/(wins+losses):0.5});
           });
-          if(abbr&&wins+losses>0)entries.push({abbr:abbr,pct:wins/(wins+losses),wins:wins,losses:losses});
         });
-      });
-      if(!entries.length){
-        document.getElementById('saved-note').textContent='could not parse standings';return;
-      }
-      entries.sort(function(a,b){
-        if(b.pct!==a.pct)return b.pct-a.pct;
-        return b.wins-a.wins; // tiebreak by wins
-      });
-      var n=entries.length;
-      entries.forEach(function(e,idx){
-        var match=null;
-        for(var j=0;j<TEAMS.length;j++){
-          if(TEAMS[j].abbr===e.abbr){match=TEAMS[j];break;}
-        }
-        if(!match)return;
-        ratings[match.abbr]=n>1?Math.round(1490-((1490-910)*(idx/(n-1)))):1200;
-      });
-      saveRatings();
-      document.getElementById('saved-note').textContent='sorted by current record ('+entries.length+' teams)';
-      renderRankings();
-    })
-    .catch(function(){
-      document.getElementById('saved-note').textContent='could not load standings';
-    });
+        if(!entries.length){tryUrl(i+1);return;}
+        entries.sort(function(a,b){return b.pct-a.pct;});
+        var n=entries.length;
+        entries.forEach(function(e,idx){
+          var match=null;
+          for(var j=0;j<TEAMS.length;j++){if(TEAMS[j].abbr===e.abbr){match=TEAMS[j];break;}}
+          if(!match)return;
+          ratings[match.abbr]=n>1?Math.round(1490-((1490-910)*(idx/(n-1)))):1200;
+        });
+        saveRatings();
+        document.getElementById('saved-note').textContent='sorted by current win %';
+        renderRankings();
+      })
+      .catch(function(){tryUrl(i+1);});
+  }
+  tryUrl(0);
 }
 
 function render(){
@@ -701,8 +693,8 @@ function setDay(v){
   document.querySelectorAll('#day-filter .pill').forEach(function(el){el.classList.toggle('on',el.dataset.val===v);});
   // Sync individual dow pills to match selection
   if(v==='all'){Object.keys(enabledDows).forEach(function(d){enabledDows[d]=true;});}
-  else if(v==='weekday'){Object.keys(enabledDows).forEach(function(d){enabledDows[d]=(+d>=0&&+d<=4);});}
-  else if(v==='weekend'){Object.keys(enabledDows).forEach(function(d){enabledDows[d]=(+d===5||+d===6||+d===0);});}
+  else if(v==='weekday'){Object.keys(enabledDows).forEach(function(d){enabledDows[d]=(+d>=1&&+d<=5);});}
+  else if(v==='weekend'){Object.keys(enabledDows).forEach(function(d){enabledDows[d]=(+d===0||+d===6);});}
   document.querySelectorAll('#dow-pills .net-pill').forEach(function(el){el.classList.toggle('on',enabledDows[+el.dataset.dow]);});
 }
 function toggleNet(el){var n=el.dataset.net;enabledNets[n]=!enabledNets[n];el.classList.toggle('on',enabledNets[n]);}
@@ -710,8 +702,8 @@ function toggleDow(el){
   var d=+el.dataset.dow;enabledDows[d]=!enabledDows[d];el.classList.toggle('on',enabledDows[d]);
   // Update day pill to reflect custom state
   var allOn=Object.values(enabledDows).every(Boolean);
-  var wdOn=[0,1,2,3,4].every(function(i){return enabledDows[i];})&&!enabledDows[5]&&!enabledDows[6];
-  var weOn=(enabledDows[5]||enabledDows[6]||enabledDows[0])&&![1,2,3,4].some(function(i){return enabledDows[i];});
+  var wdOn=[1,2,3,4,5].every(function(i){return enabledDows[i];})&&!enabledDows[0]&&!enabledDows[6];
+  var weOn=(enabledDows[0]||enabledDows[6])&&![1,2,3,4,5].some(function(i){return enabledDows[i];});
   if(allOn)dayVal='all';else if(wdOn)dayVal='weekday';else if(weOn)dayVal='weekend';else dayVal='custom';
   document.querySelectorAll('#day-filter .pill').forEach(function(el){el.classList.toggle('on',el.dataset.val===dayVal);});
 }
@@ -748,13 +740,12 @@ function resetFilters(){
   document.getElementById('w-tied').value=200;
   document.getElementById('w-game1').value=100;
   document.getElementById('w-game7').value=100;
-  document.getElementById('w-sweep').value=-300;
   document.getElementById('w-stars-on').checked=false;
   setStarPicker('stars-min-picker',1);
   setStarPicker('stars-max-picker',5);
   setDotPicker('dots-min-picker',1);
   setDotPicker('dots-max-picker',5);
-  selectedTeams=[];renderTeamBubbles();
+  document.getElementById('team-filter').value='';
   setBcast('all');setDay('all');
   Object.keys(enabledNets).forEach(function(k){enabledNets[k]=true;});
   document.querySelectorAll('#network-pills .net-pill').forEach(function(el){el.classList.add('on');});
@@ -783,13 +774,12 @@ function getFilterState(){
     tied:document.getElementById('w-tied').value,
     game1:document.getElementById('w-game1').value,
     game7:document.getElementById('w-game7').value,
-    sweep:document.getElementById('w-sweep').value,
     starsOn:document.getElementById('w-stars-on').checked,
     starsMin:document.getElementById('stars-min-picker').dataset.val,
     starsMax:document.getElementById('stars-max-picker').dataset.val,
     dotsMin:document.getElementById('dots-min-picker').dataset.val,
     dotsMax:document.getElementById('dots-max-picker').dataset.val,
-    selectedTeams:selectedTeams.slice(),
+    team:document.getElementById('team-filter').value,
   };
 }
 function applyFilterState(s){
@@ -806,13 +796,12 @@ function applyFilterState(s){
   document.getElementById('w-tied').value=s.tied||200;
   document.getElementById('w-game1').value=s.game1||100;
   document.getElementById('w-game7').value=s.game7||100;
-  document.getElementById('w-sweep').value=s.sweep||-300;
   document.getElementById('w-stars-on').checked=!!s.starsOn;
   setStarPicker('stars-min-picker',+(s.starsMin||1));
   setStarPicker('stars-max-picker',+(s.starsMax||5));
   setDotPicker('dots-min-picker',+(s.dotsMin||1));
   setDotPicker('dots-max-picker',+(s.dotsMax||5));
-  selectedTeams=s.selectedTeams||[];renderTeamBubbles();
+  document.getElementById('team-filter').value=s.team||'';
   enabledNets=Object.assign({},s.enabledNets||enabledNets);
   enabledDows=Object.assign({},s.enabledDows||enabledDows);
   setBcast(s.bcastVal||'all');
@@ -907,29 +896,12 @@ function processEvent(ev,tz){
     homeSerWins=rawHW;
     gameNum=rawAW+rawHW+1;
 
-    // For future scheduled games: ESPN shows the CURRENT series score for
-    // all future scheduled games. This means game 3 slot shows 1-1 (correct),
-    // but game 4 slot ALSO shows 1-1 (wrong — depends on game 3 result).
-    // Fix: if this is a scheduled future game AND its gameNum > (rawAW+rawHW+1),
-    // then it's beyond the next deterministic game — mark wins as unknown.
-    var today2=new Date();today2.setHours(0,0,0,0);
-    var gDate=new Date(utc);gDate.setHours(0,0,0,0);
-    if(!done&&!live&&gDate>today2){
-      var nextDeterministicGame=rawAW+rawHW+1;
-      if(gameNum>nextDeterministicGame){
-        awaySerWins=null;homeSerWins=null; // unknown, show ?-?
-      }
-    }
-
-    if(levOn&&awaySerWins!==null){
+    if(levOn){
       var tot=rawAW+rawHW;
       if(rawAW===3||rawHW===3){lev=+document.getElementById('w-elim').value||0;levLbl='elim';}
       else if(tot===6){lev=+document.getElementById('w-game7').value||0;levLbl='game 7';}
       else if(rawAW===rawHW&&rawAW>0){lev=+document.getElementById('w-tied').value||0;levLbl='tied';}
       else if(tot===0){lev=+document.getElementById('w-game1').value||0;levLbl='game 1';}
-      // Sweep penalty: series 3-0, apply sweep bonus (typically negative)
-      if((rawAW===3&&rawHW===0)||(rawHW===3&&rawAW===0)){
-        lev=+document.getElementById('w-sweep').value||0;levLbl='sweep';}
     }
   }
 
@@ -949,7 +921,8 @@ function processEvent(ev,tz){
   };
 }
 function applyFilters(games){
-  if(selectedTeams.length>0)games=games.filter(function(g){return selectedTeams.indexOf(g.homeAbbr)>=0||selectedTeams.indexOf(g.awayAbbr)>=0;});
+  var teamF=document.getElementById('team-filter').value;
+  if(teamF)games=games.filter(function(g){return g.homeAbbr===teamF||g.awayAbbr===teamF;});
   var bcastOn=document.getElementById('w-bcast-on').checked;
   if(bcastOn){
     if(bcastVal==='national')games=games.filter(function(g){return g.isNat;});
@@ -1128,41 +1101,11 @@ function buildChart(games){
       backgroundColor:g.dotColor,borderColor:g.dotColor,pointBackgroundColor:g.dotColor,pointBorderColor:g.dotColor,
       pointRadius:8,pointHoverRadius:11,showLine:false,label:'_'};
   });
-  // Flame threshold line (top-right corner, red dashed)
-  var flameLine=lds(lpts(RMAX),'rgba(163,45,45,0.55)',[5,3],1.5);
-
-  // Bonus arrows: for each game with a bonus, draw an arrow on the y=x line
-  // showing how far the bonus moves it up the matchup scale
-  var arrowDatasets=[];
-  games.forEach(function(g){
-    if(!g.lev&&!g.tvBonus)return;
-    var bonus=g.lev+(g.tvBonus||0);
-    if(!bonus)return;
-    // Position on the balance line at the game's combined elo
-    var combined=g.awayElo+g.homeElo;
-    // midpoint on y=x: each axis gets half
-    var mid=combined/2;
-    // arrow goes from mid,mid toward mid+bonus/2, mid+bonus/2
-    var endVal=Math.min((combined+bonus)/2,AMAX);
-    arrowDatasets.push({
-      type:'scatter',
-      data:[{x:mid,y:mid},{x:endVal,y:endVal}],
-      borderColor:'rgba(163,45,45,0.7)',
-      backgroundColor:'transparent',
-      pointRadius:[0,5],
-      pointBackgroundColor:'rgba(163,45,45,0.7)',
-      pointBorderColor:'rgba(163,45,45,0.7)',
-      showLine:true,borderWidth:2,label:'_'
-    });
-  });
-
   var lines=[
     lds([{x:AMIN,y:AMIN},{x:AMAX,y:AMAX}],'rgba(100,100,100,0.5)',[7,3],1.5),
     lds([{x:MED,y:AMIN},{x:MED,y:AMAX}],'rgba(100,100,100,0.3)',[4,4],1),
     lds([{x:AMIN,y:MED},{x:AMAX,y:MED}],'rgba(100,100,100,0.3)',[4,4],1),
-    flameLine,
-  ].concat(qb.map(function(S){return lds(lpts(S),'rgba(186,117,23,0.35)',[3,4],1);}))
-   .concat(arrowDatasets);
+  ].concat(qb.map(function(S){return lds(lpts(S),'rgba(186,117,23,0.35)',[3,4],1);}));
   // Size canvas for sidebar — wider than tall
   var cvs=document.getElementById('scatter-canvas');
   var cw=wrap.clientWidth-24;
@@ -1264,33 +1207,13 @@ setDotPicker('dots-min-picker',1);
 setDotPicker('dots-max-picker',5);
 ratingProfiles=loadRatingProfiles();renderRatingProfiles();
 filterProfiles=loadFilterProfiles();renderFilterProfiles();
-// Team filter: multi-select with bubbles
-var selectedTeams=[];
-function populateTeamDropdown(){
+// Populate team dropdown
+(function(){
   var sel=document.getElementById('team-filter');
   TEAMS.slice().sort(function(a,b){return a.name.localeCompare(b.name);}).forEach(function(t){
     var o=document.createElement('option');o.value=t.abbr;o.textContent=t.name;sel.appendChild(o);
   });
-}
-function addTeamFilter(sel){
-  var abbr=sel.value;
-  if(!abbr)return;
-  sel.value='';
-  if(selectedTeams.indexOf(abbr)>=0)return; // already added
-  selectedTeams.push(abbr);
-  renderTeamBubbles();
-}
-function removeTeamFilter(abbr){
-  selectedTeams=selectedTeams.filter(function(a){return a!==abbr;});
-  renderTeamBubbles();
-}
-function renderTeamBubbles(){
-  var wrap=document.getElementById('team-bubbles');
-  wrap.innerHTML=selectedTeams.map(function(abbr){
-    return'<div class="team-bubble" onclick="removeTeamFilter(''+abbr+'')">'+abbr+' <span style="opacity:.6;font-size:9px">✕</span></div>';
-  }).join('');
-}
-populateTeamDropdown();
+})();
 document.getElementById('date-picker').value=ival(currentDate);
 // Default: date/time ON with today
 document.getElementById('w-dt-on').checked=true;
