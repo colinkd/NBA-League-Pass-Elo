@@ -81,6 +81,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 
 /* LEFT: cards */
 .games-list-col{}
+.date-bar{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap;background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:10px 12px}
 .games-list-header{display:flex;align-items:center;gap:8px;margin-bottom:.75rem}
 .games-list-title{font-family:var(--mono);font-size:12px;color:var(--text-2);flex:1}
 .tz-select{font-family:var(--mono);font-size:11px;color:var(--text-2);background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 7px;cursor:pointer}
@@ -171,8 +172,8 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 .dot-picker span.lit{background:#3B6D11}
 .chart-title{font-family:var(--mono);font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
 .chart-legend{display:flex;flex-wrap:wrap;gap:3px 8px;margin-top:8px}
-.leg-item{font-size:9px;color:var(--text-2);font-family:var(--mono);display:flex;align-items:center;gap:3px;white-space:nowrap}
-.leg-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.leg-item{font-size:10px;color:var(--text-2);font-family:var(--mono);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
 .about-footer{margin-top:2.5rem;padding-top:1.25rem;border-top:.5px solid var(--border);text-align:center}
 .about-footer p{font-family:var(--mono);font-size:10px;color:var(--text-3);line-height:1.8}
@@ -186,7 +187,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <header class="site-header">
   <div>
     <div class="site-title">NBA LEAGUE PASS RANKER</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v3.10 · built 2025-05-05</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v3.12 · built 2025-05-05</div>
   </div>
   <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right;line-height:1.6">find the perfect matchups<br/>powered by your picks</div>
 </header>
@@ -233,9 +234,25 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 
     <!-- LEFT: game cards -->
     <div class="games-list-col">
-      <div class="games-list-header">
-        <div class="games-list-title" id="games-title">today's games</div>
-        <select class="tz-select" id="tz-select">
+      <!-- DATE BAR: above game cards, left column width -->
+      <div class="date-bar">
+        <div class="pills" style="flex-shrink:0">
+          <div class="pill on" id="mode-single" onclick="setDateMode('single')">single date</div>
+          <div class="pill" id="mode-range" onclick="setDateMode('range')">date range</div>
+        </div>
+        <!-- single date -->
+        <div id="single-date-row" class="date-row" style="flex:1;margin:0">
+          <button class="btn btn-sm" onclick="shiftDate(-1)">←</button>
+          <input type="date" class="date-in" id="date-picker" style="flex:1"/>
+          <button class="btn btn-sm" onclick="shiftDate(1)">→</button>
+          <button class="btn btn-sm" onclick="goToday()">today</button>
+        </div>
+        <!-- range dates -->
+        <div id="range-date-row" style="display:none;flex:1;align-items:center;gap:5px" class="date-row">
+          <div class="date-lbl">from</div><input type="date" class="date-in" id="w-from" style="flex:1"/>
+          <div class="date-lbl">to</div><input type="date" class="date-in" id="w-to" style="flex:1"/>
+        </div>
+        <select class="tz-select" id="tz-select" style="flex-shrink:0">
           <option value="ET">ET</option>
           <option value="CT">CT</option>
           <option value="MT">MT</option>
@@ -259,34 +276,15 @@ input:checked+.tog-track::after{transform:translateX(14px)}
         <div class="prof-bar" id="fprof-bar" style="margin-bottom:0"></div>
       </div>
 
-      <!-- DATE & TIME -->
+      <!-- DAY & TIME -->
       <div class="fs">
         <div class="fs-head">
-          <div class="fs-title">date &amp; time</div>
+          <div class="fs-title">day &amp; time</div>
           <label class="tog"><input type="checkbox" id="w-dt-on" onchange="updateStates()"/><span class="tog-track"></span></label>
         </div>
         <div class="fs-body" id="dt-body">
-          <!-- single/range toggle -->
-          <div class="fw" style="margin-bottom:6px">
-            <div class="pills">
-              <div class="pill on" id="mode-single" onclick="setDateMode('single')">single date</div>
-              <div class="pill" id="mode-range" onclick="setDateMode('range')">date range</div>
-            </div>
-          </div>
-          <!-- single date -->
-          <div id="single-date-row" class="date-row">
-            <button class="btn btn-sm" onclick="shiftDate(-1)">←</button>
-            <input type="date" class="date-in" id="date-picker"/>
-            <button class="btn btn-sm" onclick="shiftDate(1)">→</button>
-            <button class="btn btn-sm" onclick="goToday()">today</button>
-          </div>
-          <!-- range dates -->
-          <div id="range-date-row" style="display:none" class="date-row">
-            <div class="date-lbl">from</div><input type="date" class="date-in" id="w-from"/>
-            <div class="date-lbl">to</div><input type="date" class="date-in" id="w-to"/>
-          </div>
-          <!-- day filter — mirrors broadcast structure -->
-          <div class="fw" style="margin-top:4px">
+          <!-- day filter -->
+          <div class="fw" style="margin-top:0">
             <div class="fw-lbl">Day of week</div>
             <div class="pills" id="day-filter">
               <div class="pill on" data-val="all" onclick="setDay('all')">all</div>
@@ -1085,7 +1083,7 @@ function loadSingle(){
   var el=document.getElementById('games-content');
   el.innerHTML='<div class="loading">loading...</div>';
   document.getElementById('games-note').textContent='';
-  document.getElementById('games-title').textContent=fmtDateShort(currentDate);
+  
   fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates='+dstr(currentDate))
     .then(function(r){return r.json();})
     .then(function(data){
@@ -1115,7 +1113,7 @@ function loadRange(){
   var el=document.getElementById('games-content');
   el.innerHTML='<div class="loading">fetching '+days+' days...</div>';
   document.getElementById('games-note').textContent='';
-  document.getElementById('games-title').textContent=MONTHS[from.getMonth()]+' '+from.getDate()+' – '+MONTHS[to.getMonth()]+' '+to.getDate();
+  
   var all=[],dates=[];
   for(var d=new Date(from);d<=to;d.setDate(d.getDate()+1))dates.push(dstr(new Date(d)));
   function next(i){
@@ -1161,11 +1159,11 @@ function buildChart(games){
   var dots=games.map(function(g){
     return{type:'scatter',data:[{x:g.awayElo,y:g.homeElo}],
       backgroundColor:g.dotColor,borderColor:g.dotColor,pointBackgroundColor:g.dotColor,pointBorderColor:g.dotColor,
-      pointRadius:8,pointHoverRadius:11,showLine:false,label:'_'};
+      pointRadius:10,pointHoverRadius:13,showLine:false,label:'_'};
   });
   // Flame threshold line (top-right corner, red dashed)
   var CHART_MAX=1700;
-  var flameLine=lds(lpts(RMAX),'rgba(163,45,45,0.55)',[5,3],1.5);
+  var flameLine=lds(lpts(RMAX),'rgba(163,45,45,0.8)',[6,3],2);
 
   // Bonus arrows: start from the game's dot, extend along y=x by bonus amount
   // Each arrow is its own dataset so tooltip can show bonus label
@@ -1196,17 +1194,17 @@ function buildChart(games){
   });
 
   var lines=[
-    lds([{x:AMIN,y:AMIN},{x:CHART_MAX,y:CHART_MAX}],'rgba(100,100,100,0.5)',[7,3],1.5),
-    lds([{x:MED,y:AMIN},{x:MED,y:CHART_MAX}],'rgba(100,100,100,0.3)',[4,4],1),
-    lds([{x:AMIN,y:MED},{x:CHART_MAX,y:MED}],'rgba(100,100,100,0.3)',[4,4],1),
+    lds([{x:AMIN,y:AMIN},{x:CHART_MAX,y:CHART_MAX}],'rgba(100,100,100,0.75)',[7,4],2),
+    lds([{x:MED,y:AMIN},{x:MED,y:CHART_MAX}],'rgba(100,100,100,0.55)',[4,4],1.5),
+    lds([{x:AMIN,y:MED},{x:CHART_MAX,y:MED}],'rgba(100,100,100,0.55)',[4,4],1.5),
     flameLine,
-  ].concat(qb.map(function(S){return lds(lpts(S),'rgba(186,117,23,0.35)',[3,4],1);}))
+  ].concat(qb.map(function(S){return lds(lpts(S),'rgba(186,117,23,0.65)',[4,3],1.5);}))
    .concat(arrowDatasets);
 
   // Size canvas for sidebar — wider than tall
   var cvs=document.getElementById('scatter-canvas');
   var cw=wrap.clientWidth-24;
-  var ch=Math.round(cw*0.85);
+  var ch=Math.round(cw*1.0);
   cvs.style.width=cw+'px';cvs.style.height=ch+'px';
   cvs.width=cw*(window.devicePixelRatio||1);cvs.height=ch*(window.devicePixelRatio||1);
   scatterInst=new Chart(cvs,{
@@ -1228,11 +1226,11 @@ function buildChart(games){
         }}}},
       scales:{
         x:{type:'linear',min:AMIN,max:CHART_MAX,
-          title:{display:true,text:'away elo',color:'#888780',font:{size:11}},
-          grid:{color:'rgba(180,178,169,0.25)'},ticks:{color:'#888780',font:{size:11},maxTicksLimit:7}},
+          title:{display:true,text:'away elo',color:'#888780',font:{size:12}},
+          grid:{color:'rgba(180,178,169,0.35)'},ticks:{color:'#888780',font:{size:12},maxTicksLimit:7}},
         y:{type:'linear',min:AMIN,max:CHART_MAX,
-          title:{display:true,text:'home elo',color:'#888780',font:{size:11}},
-          grid:{color:'rgba(180,178,169,0.25)'},ticks:{color:'#888780',font:{size:11},maxTicksLimit:7}}
+          title:{display:true,text:'home elo',color:'#888780',font:{size:12}},
+          grid:{color:'rgba(180,178,169,0.35)'},ticks:{color:'#888780',font:{size:12},maxTicksLimit:7}}
       }
     }
   });
