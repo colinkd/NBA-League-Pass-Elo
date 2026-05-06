@@ -967,6 +967,15 @@ function processEvent(ev,tz){
     dateLabel:fmtDateShort(utc),utcMs:utc.getTime(),
     watch:watch,isNat:isNat,watchTBD:watchTBD,lev:lev,levLbl:levLbl,tvBonus:tvBonus,
     gameNum:gameNum,awaySerWins:awaySerWins,homeSerWins:homeSerWins,
+    _debug:{
+      rawAW:typeof rawAW!=='undefined'?rawAW:null,
+      rawHW:typeof rawHW!=='undefined'?rawHW:null,
+      summaryGameNum:typeof summaryGameNum!=='undefined'?summaryGameNum:null,
+      serSummary:comp.series?(comp.series.summary||'NONE'):'no series',
+      serTitle:comp.series?(comp.series.title||'NONE'):'',
+      statusName:(comp.status&&comp.status.type)?comp.status.type.name:'',
+      done:typeof done!=='undefined'?done:null
+    },
     total:total,score:total+Math.random()*10
   };
 }
@@ -1037,11 +1046,13 @@ function renderCards(games,showDate){
     if(g.gameNum!==null&&g.gameNum!==undefined){
       var hasScore=g.awaySerWins!==null&&g.homeSerWins!==null;
       var scoreLine=hasScore?(g.awayAbbr+' '+g.awaySerWins+' – '+g.homeSerWins+' '+g.homeAbbr):'tbd';
+      var dbg=g._debug||{};
       seriesBlock=
         '<div style="margin-top:4px;padding-top:4px;border-top:.5px solid var(--border-light)">'+
         '<div style="font-family:var(--mono);font-size:10px;color:var(--amber);text-align:center;font-weight:600">game '+g.gameNum+'</div>'+
         '<div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:center;margin-top:1px">currently</div>'+
         '<div style="font-family:var(--mono);font-size:11px;color:var(--text-2);text-align:center;font-weight:500">'+scoreLine+'</div>'+
+        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center;margin-top:2px">dbg: raw='+dbg.rawAW+'-'+dbg.rawHW+' sum='+dbg.summaryGameNum+' ser='+dbg.serSummary+' st='+dbg.statusName+'</div>'+
         '</div>';
     }
     return'<div class="game-card">'+
