@@ -186,7 +186,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <header class="site-header">
   <div>
     <div class="site-title">NBA LEAGUE PASS RANKER</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v3.8 · built 2025-05-05</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v3.9 · built 2025-05-05</div>
   </div>
   <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right;line-height:1.6">find the perfect matchups<br/>powered by your picks</div>
 </header>
@@ -926,9 +926,13 @@ function processEvent(ev,tz){
     // This is the authoritative game number for this competition slot.
     // Fall back to wins+1 if summary isn't available.
     var summaryGameNum=null;
-    if(ser.summary){
-      var m=ser.summary.match(/Game\s*(\d+)/i);
-      if(m)summaryGameNum=+m[1];
+    // Try series.summary first, then comp.notes headline (e.g. "East Semifinals - Game 2")
+    var gameNumSources=[ser.summary];
+    if(comp.notes&&comp.notes.length)gameNumSources.push(comp.notes[0].headline||'');
+    for(var ni=0;ni<gameNumSources.length;ni++){
+      if(!gameNumSources[ni])continue;
+      var m=gameNumSources[ni].match(/Game\s*(\d+)/i);
+      if(m){summaryGameNum=+m[1];break;}
     }
     gameNum=summaryGameNum||(rawAW+rawHW+1);
 
@@ -970,20 +974,7 @@ function processEvent(ev,tz){
     dateLabel:fmtDateShort(utc),utcMs:utc.getTime(),
     watch:watch,isNat:isNat,watchTBD:watchTBD,lev:lev,levLbl:levLbl,tvBonus:tvBonus,
     gameNum:gameNum,awaySerWins:awaySerWins,homeSerWins:homeSerWins,
-    _debug:{
-      rawAW:typeof rawAW!=='undefined'?rawAW:null,
-      rawHW:typeof rawHW!=='undefined'?rawHW:null,
-      summaryGameNum:typeof summaryGameNum!=='undefined'?summaryGameNum:null,
-      serSummary:comp.series?(comp.series.summary||'NONE'):'no series',
-      serTitle:comp.series?(comp.series.title||'NONE'):'',
-      serType:comp.series?(comp.series.type||''):'',
-      serCompleted:comp.series?(comp.series.completed||''):'',
-      evNotes:JSON.stringify((comp.notes||[]).slice(0,2)),
-      evSeriesStatus:JSON.stringify(ev.seriesStatus||'none'),
-      statusPeriod:comp.status?comp.status.period:'',
-      statusName:(comp.status&&comp.status.type)?comp.status.type.name:'',
-      done:typeof done!=='undefined'?done:null
-    },
+
     total:total,score:total+Math.random()*10
   };
 }
@@ -1054,16 +1045,11 @@ function renderCards(games,showDate){
     if(g.gameNum!==null&&g.gameNum!==undefined){
       var hasScore=g.awaySerWins!==null&&g.homeSerWins!==null;
       var scoreLine=hasScore?(g.awayAbbr+' '+g.awaySerWins+' – '+g.homeSerWins+' '+g.homeAbbr):'tbd';
-      var dbg=g._debug||{};
       seriesBlock=
         '<div style="margin-top:4px;padding-top:4px;border-top:.5px solid var(--border-light)">'+
         '<div style="font-family:var(--mono);font-size:10px;color:var(--amber);text-align:center;font-weight:600">game '+g.gameNum+'</div>'+
         '<div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:center;margin-top:1px">currently</div>'+
         '<div style="font-family:var(--mono);font-size:11px;color:var(--text-2);text-align:center;font-weight:500">'+scoreLine+'</div>'+
-        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center;margin-top:2px">raw='+dbg.rawAW+'-'+dbg.rawHW+' sum='+dbg.summaryGameNum+'</div>'+
-        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center">ser='+dbg.serSummary+' title='+dbg.serTitle+'</div>'+
-        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center">notes='+dbg.evNotes+'</div>'+
-        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center">serStatus='+dbg.evSeriesStatus+'</div>'+
         '</div>';
     }
     return'<div class="game-card">'+
