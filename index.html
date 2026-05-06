@@ -186,7 +186,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <header class="site-header">
   <div>
     <div class="site-title">NBA LEAGUE PASS RANKER</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v3.9 · built 2025-05-05</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v3.10 · built 2025-05-05</div>
   </div>
   <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right;line-height:1.6">find the perfect matchups<br/>powered by your picks</div>
 </header>
@@ -437,7 +437,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
             <input type="number" class="fw-num" id="w-game7" value="200"/>
           </div>
           <div class="fw">
-            <div class="fw-lbl">Sweep (3-0)<span class="fw-sub">offsets elim bonus</span></div>
+            <div class="fw-lbl">Sweep (3-0)</div>
             <input type="number" class="fw-num" id="w-sweep" value="-500"/>
           </div>
         </div>
@@ -901,7 +901,7 @@ function processEvent(ev,tz){
   if(comp.series){
     var ser=comp.series;
     var st=(comp.status||{}).type||{};
-    var done=!!(st.completed||st.name==='STATUS_FINAL');
+    var done=!!(st.completed||st.name==='STATUS_FINAL'||st.name==='STATUS_FINAL_OT'||st.name==='STATUS_FINAL_2OT'||st.name==='STATUS_FINAL_3OT');
     var live=st.name==='STATUS_IN_PROGRESS'||st.name==='STATUS_HALFTIME';
 
     // Read current cumulative wins by team id
