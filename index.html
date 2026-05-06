@@ -87,6 +87,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .tz-select{font-family:var(--mono);font-size:11px;color:var(--text-2);background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 7px;cursor:pointer}
 .game-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:14px 14px 12px;margin-bottom:8px}
 .game-card-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.gcal-btn{margin-left:auto;font-size:14px;text-decoration:none;opacity:.6;transition:opacity .15s;cursor:pointer}
+.gcal-btn:hover{opacity:1}
 .game-rank-num{font-family:var(--mono);font-size:18px;font-weight:700;line-height:1;color:#fff;border-radius:6px;padding:2px 8px;display:inline-block}
 .rank-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .game-date-badge{font-family:var(--mono);font-size:11px;color:var(--text-2);background:var(--bg);border:.5px solid var(--border);padding:3px 8px;border-radius:var(--radius-sm);margin-left:auto;font-weight:500}
@@ -117,7 +119,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 /* filter sections */
 .fs{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:11px 12px;margin-bottom:8px}
 .fs-body{overflow:hidden;transition:max-height .2s ease,opacity .2s ease;max-height:600px;opacity:1}
-.fs-body.collapsed,.nest.collapsed{max-height:0!important;opacity:0;pointer-events:none;margin:0;padding:0;border:none}
+.fs-body.collapsed,.nest.collapsed{max-height:0!important;opacity:0;pointer-events:none;margin:0;padding:0;border:none;overflow:hidden}
 .fs-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;transition:margin .2s}
 .fs-body.collapsed+*,.fs-head:has(+.fs-body.collapsed){margin-bottom:0}
 .fs-title{font-family:var(--mono);font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex:1}
@@ -189,7 +191,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <header class="site-header">
   <div>
     <div class="site-title">NBA LEAGUE PASS RANKER</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v4.1 · built 2025-05-06</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v4.2 · built 2025-05-06</div>
   </div>
   <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right;line-height:1.6">find the perfect matchups<br/>powered by your picks</div>
 </header>
@@ -888,6 +890,28 @@ function getTeamData(name){
   return{elo:1200,abbr:name.substring(0,3).toUpperCase(),espn:''};
 }
 // Series score cache: keyed by sorted-team-pair + date
+function makeGcalUrl(utc,awayName,homeName,watch,lev,levLbl,tvBonus,gameNum,rawAW,rawHW,hd,ad){
+  // Build Google Calendar "add event" URL
+  var title=encodeURIComponent((hd&&ad)?(ad.abbr+' @ '+hd.abbr):(awayName+' @ '+homeName));
+  // Start: game time UTC, End: +2.5 hours (typical NBA game)
+  function pad2(n){return String(n).padStart(2,'0');}
+  var s=new Date(utc);
+  var e=new Date(utc.getTime()+2.5*3600000);
+  function gfmt(d){
+    return d.getUTCFullYear()+pad2(d.getUTCMonth()+1)+pad2(d.getUTCDate())+'T'+
+           pad2(d.getUTCHours())+pad2(d.getUTCMinutes())+'00Z';
+  }
+  var dates=gfmt(s)+'/'+gfmt(e);
+  var details='';
+  if(gameNum)details+='Game '+gameNum;
+  if(rawAW!==undefined&&rawHW!==undefined&&rawAW!==null&&rawHW!==null)
+    details+=' | Series: '+(ad?ad.abbr:'away')+' '+rawAW+'-'+rawHW+' '+(hd?hd.abbr:'home');
+  if(watch&&watch!=='League Pass')details+=' | '+watch;
+  if(lev>0&&levLbl)details+=' | +'+lev+' '+levLbl;
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE'+
+    '&text='+title+'&dates='+dates+'&details='+encodeURIComponent(details);
+}
+
 function processEvent(ev,tz){
   var comp=ev.competitions[0];
   var home=comp.competitors[0],away=comp.competitors[1];
@@ -994,6 +1018,7 @@ function processEvent(ev,tz){
     watch:watch,isNat:isNat,watchTBD:watchTBD,lev:lev,levLbl:levLbl,tvBonus:tvBonus,
     gameNum:gameNum,awaySerWins:awaySerWins,homeSerWins:homeSerWins,
 
+    gcalUrl:makeGcalUrl(utc,away.team.displayName,home.team.displayName,watch,lev,levLbl,tvBonus,gameNum,rawAW,rawHW,hd,ad),
     total:total,score:total+Math.random()*10
   };
 }
@@ -1075,6 +1100,7 @@ function renderCards(games,showDate){
       '<div class="game-card-header">'+
         '<span class="rank-dot" style="background:'+g.dotColor+'"></span>'+
         '<span class="game-rank-num" style="background:'+rc+';color:#fff">#'+rank+'</span>'+
+        (g.gcalUrl?'<a href="'+g.gcalUrl+'" target="_blank" class="gcal-btn" title="Add to Google Calendar">📅</a>':'')+
       '</div>'+
       '<div class="game-teams">'+
         '<div class="g-team"><img src="'+(g.awayLogo||logo(g.awayEspn))+'" alt="'+g.awayAbbr+'"/><div class="g-abbr">'+g.awayAbbr+'</div><div class="g-elo">'+g.awayElo+'</div><div class="g-dots">'+dotsHtml(g.awayDots)+'</div></div>'+
