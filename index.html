@@ -897,7 +897,11 @@ function processEvent(ev,tz){
 
   if(comp.series){
     var ser=comp.series;
-    // Read wins indexed by ESPN team id → wins
+    var st=(comp.status||{}).type||{};
+    var done=!!(st.completed||st.name==='STATUS_FINAL');
+    var live=st.name==='STATUS_IN_PROGRESS'||st.name==='STATUS_HALFTIME';
+
+    // Read current cumulative wins by team id
     var winsByTeamId={};
     (ser.competitors||[]).forEach(function(c){
       winsByTeamId[String(c.id)]=+(c.wins||0);
@@ -905,68 +909,48 @@ function processEvent(ev,tz){
     var rawAW=winsByTeamId[String(away.team.id)]||0;
     var rawHW=winsByTeamId[String(home.team.id)]||0;
 
-    // Adjust for completed/in-progress: subtract tonight's win from the winner
-    var st=(comp.status||{}).type||{};
-    var done=!!(st.completed||st.name==='STATUS_FINAL');
-    var live=st.name==='STATUS_IN_PROGRESS'||st.name==='STATUS_HALFTIME';
+    // For completed/in-progress games the API wins INCLUDE tonight — subtract winner
     if(done||live){
-      var hs=+(home.score||0),as=+(away.score||0);
-      if(hs>as&&rawHW>0)rawHW--;
-      else if(as>hs&&rawAW>0)rawAW--;
-      // tied score (shouldn't happen in basketball final) → no adjustment
+      var hs=+(home.score||0),as_=+(away.score||0);
+      if(hs>as_&&rawHW>0)rawHW--;
+      else if(as_>hs&&rawAW>0)rawAW--;
     }
 
     awaySerWins=rawAW;
     homeSerWins=rawHW;
-    // gameNum = what game number this IS in the series (based on current score)
-    var currentGameInSeries=rawAW+rawHW+1;
-    gameNum=currentGameInSeries;
 
-    // For scheduled future games, figure out if this game is deterministic:
-    // The NEXT game in the series (currentGameInSeries) is always deterministic.
-    // Any game beyond that depends on outcomes we don't know yet.
-    var today2=new Date();today2.setHours(0,0,0,0);
-    var gDate=new Date(utc);gDate.setHours(0,0,0,0);
-    var isFutureScheduled=!done&&!live&&gDate>today2;
-    // isFutureUnknown: this game slot is beyond the next deterministic game
-    // We detect this by checking if there are other future games in this series
-    // scheduled before this one that haven't been played yet.
-    // Simplest heuristic: we always trust ESPN's gameNum for the immediate next
-    // unplayed game. Beyond that we don't know the score but we DO know the
-    // game number (since the schedule is fixed). So always show gameNum.
-    // The series score "Currently X-Y" is always the current score.
+    // Use ESPN's series.summary ("Game 2", "Game 3" etc) for the scheduled game number.
+    // This is the authoritative game number for this competition slot.
+    // Fall back to wins+1 if summary isn't available.
+    var summaryGameNum=null;
+    if(ser.summary){
+      var m=ser.summary.match(/Game\s*(\d+)/i);
+      if(m)summaryGameNum=+m[1];
+    }
+    gameNum=summaryGameNum||(rawAW+rawHW+1);
 
+    // Bonus logic — use the SCHEDULED game number (gameNum) for categorization,
+    // and use pre-game series score (rawAW, rawHW) for context.
     if(levOn){
-      var tot=rawAW+rawHW;
-      // Sweep: 3-0 series — only apply sweep, not elim
+      var tot=rawAW+rawHW; // pre-game total games played
+      // Sweep: series 3-0 before tonight → loser already gone
       if((rawAW===3&&rawHW===0)||(rawHW===3&&rawAW===0)){
         lev=+document.getElementById('w-sweep').value||0;levLbl='sweep';
+      // Elimination: one team at 3 wins (this is their 4th chance / other's elim game)
       } else if(rawAW===3||rawHW===3){
-        // Elimination but not sweep
         lev=+document.getElementById('w-elim').value||0;levLbl='elim';
-      } else if(tot===6){
-        // Game 7: give elim bonus + game7 bonus stacked
+      // Game 7: scheduled game number is 7 (series at 3-3 pre-game)
+      } else if(gameNum===7){
         lev=(+document.getElementById('w-elim').value||0)+(+document.getElementById('w-game7').value||0);levLbl='game 7';
-      } else if(isFutureScheduled){
-        // For future games we know the game number from the schedule.
-        // Apply bonuses based on what that game CATEGORICALLY is:
-        // Game 6 when series is 2-2 → elimination game (whoever loses is out)
-        // Game 7 when series is 3-3 → game 7
-        // Game 5 when series is 2-2 → tied series
-        // Game 1 (0-0) → game 1 bonus
-        if(tot===0){lev=+document.getElementById('w-game1').value||0;levLbl='game 1';}
-        else if(rawAW===rawHW){lev=+document.getElementById('w-tied').value||0;levLbl='tied';}
-        // For future games beyond next: tot may not reflect this game's series state
-        // but we can still give elimination bonus if both teams need 1 more win
-        else if(rawAW===2||rawHW===2){
-          // One team up 2-X; if game is categorically elimination it would be game 6+ 
-          // Only give elim if game number means the loser goes home
-          var losingTeamWins=Math.min(rawAW,rawHW);
-          if(losingTeamWins===2){lev=+document.getElementById('w-elim').value||0;levLbl='elim';}
-        }
-      } else {
-        if(rawAW===rawHW&&rawAW>0){lev=+document.getElementById('w-tied').value||0;levLbl='tied';}
-        else if(tot===0){lev=+document.getElementById('w-game1').value||0;levLbl='game 1';}
+      // Game 6 with series 3-2: elimination for the team with 2 wins
+      } else if(gameNum===6&&(rawAW===3||rawHW===3||(rawAW===2&&rawHW===3)||(rawHW===2&&rawAW===3))){
+        lev=+document.getElementById('w-elim').value||0;levLbl='elim';
+      // Tied series (not game 1)
+      } else if(rawAW===rawHW&&rawAW>0){
+        lev=+document.getElementById('w-tied').value||0;levLbl='tied';
+      // Game 1: first game of series
+      } else if(gameNum===1){
+        lev=+document.getElementById('w-game1').value||0;levLbl='game 1';
       }
     }
   }
