@@ -34,7 +34,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .tab.active{background:var(--surface);color:var(--text)}
 
 /* ── RANKER (centered, ~game-card width) ──────────────── */
-#view-ranker{max-width:640px;margin:0 auto}
+#view-ranker{max-width:640px;margin:0 auto;display:none}
 .matchup-progress{font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:center;margin-bottom:.5rem;letter-spacing:.5px}
 .round-bar-wrap{margin-bottom:.75rem}
 .round-bar-track{background:var(--border-light);border-radius:3px;height:4px}
@@ -75,7 +75,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .btn-sm{padding:5px 10px;font-size:11px}
 
 /* ── GAMES PAGE (two-column) ────────────── */
-#view-games{display:none}
+#view-games{}
 .games-layout{display:grid;grid-template-columns:1fr 290px;gap:1.25rem;align-items:start}
 @media(max-width:680px){.games-layout{grid-template-columns:1fr}}
 
@@ -117,7 +117,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 /* filter sections */
 .fs{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:11px 12px;margin-bottom:8px}
 .fs-body{overflow:hidden;transition:max-height .2s ease,opacity .2s ease;max-height:600px;opacity:1}
-.fs-body.collapsed{max-height:0!important;opacity:0;pointer-events:none;margin:0;padding:0}
+.fs-body.collapsed,.nest.collapsed{max-height:0!important;opacity:0;pointer-events:none;margin:0;padding:0;border:none}
 .fs-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;transition:margin .2s}
 .fs-body.collapsed+*,.fs-head:has(+.fs-body.collapsed){margin-bottom:0}
 .fs-title{font-family:var(--mono);font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex:1}
@@ -194,13 +194,13 @@ input:checked+.tog-track::after{transform:translateX(14px)}
   <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right;line-height:1.6">find the perfect matchups<br/>powered by your picks</div>
 </header>
 <div class="tabs">
-  <button class="tab active" id="tab-ranker" onclick="switchTab('ranker')">elo rankings</button>
-  <button class="tab"        id="tab-games"  onclick="switchTab('games')">games</button>
+  <button class="tab active" id="tab-games"  onclick="switchTab('games')">games</button>
+  <button class="tab"        id="tab-ranker" onclick="switchTab('ranker')">elo rankings</button>
   <button class="tab"        id="tab-map"    onclick="switchTab('map')">matchup map</button>
 </div>
 
 <!-- ══ RANKER ══════════════════════════════════════════ -->
-<div id="view-ranker">
+<div id="view-ranker" style="display:none">
   <div class="matchup-progress" id="progress"></div>
   <div class="round-bar-wrap"><div class="round-bar-track"><div class="round-bar-fill" id="round-bar" style="width:0%"></div></div></div>
   <div class="keyboard-hint">← left &nbsp;·&nbsp; → right &nbsp;·&nbsp; ↓ skip</div>
@@ -370,8 +370,9 @@ input:checked+.tog-track::after{transform:translateX(14px)}
       <!-- TEAM FILTER -->
       <div class="fs">
         <div class="fs-head"><div class="fs-title">team filter</div><label class="tog"><input type="checkbox" id="w-team-on" checked onchange="updateStates()"/><span class="tog-track"></span></label></div>
+        <div class="fs-body" id="team-body">
         <div style="font-family:var(--mono);font-size:10px;color:var(--green);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">include</div>
-        <div class="fs-body" id="team-body"><select class="team-sel" id="team-include" onchange="addTeam('include',this)">
+        <select class="team-sel" id="team-include" onchange="addTeam('include',this)">
           <option value="">add a team...</option>
         </select>
         <div id="team-include-bubbles" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;margin-bottom:8px"></div>
@@ -446,11 +447,6 @@ input:checked+.tog-track::after{transform:translateX(14px)}
       </div>
 
       <!-- CHART -->
-      <div class="chart-wrap" id="chart-wrap" style="display:none">
-        <div class="chart-title">matchup map</div>
-        <canvas id="scatter-canvas"></canvas>
-        <div class="chart-legend" id="chart-legend"></div>
-      </div>
 
     </div>
   </div>
@@ -461,7 +457,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <div id="view-map" style="display:none">
   <div id="map-nogames" style="font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:center;padding:3rem 0">load games first, then come back here</div>
   <div id="map-content" style="display:none">
-    <div style="background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:20px">
+    <div style="background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:20px;max-width:67%;margin:0 auto">
       <div class="chart-title" style="margin-bottom:14px;font-size:13px">matchup map</div>
       <canvas id="map-canvas"></canvas>
       <div class="chart-legend" id="map-legend" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:5px 14px"></div>
@@ -763,11 +759,8 @@ function updateStates(){
   document.getElementById('tv-nest').classList.toggle('off',!tvOn);
   var levOn=document.getElementById('w-lev-on').checked;
   collapseBody('lev-nest',levOn);
-  // lev-nest is a .nest not .fs-body — handle separately
-  document.getElementById('lev-nest').classList.toggle('off',!levOn);
   var starsOn=document.getElementById('w-stars-on').checked;
   collapseBody('stars-nest',starsOn);
-  document.getElementById('stars-nest').classList.toggle('off',!starsOn);
   var teamOn=document.getElementById('w-team-on').checked;
   collapseBody('team-body',teamOn);
 }
@@ -1116,15 +1109,15 @@ function loadSingle(){
     .then(function(r){return r.json();})
     .then(function(data){
       var events=data.events||[];
-      if(!events.length){el.innerHTML='<div class="no-games">no games on this date</div>';lastGames=[];buildChart([]);return;}
+      if(!events.length){el.innerHTML='<div class="no-games">no games on this date</div>';lastGames=[];return;}
       var games=events.map(function(ev){return processEvent(ev,tz);});
       games=applyFilters(games);
-      if(!games.length){el.innerHTML='<div class="no-games">no games match your filters</div>';lastGames=[];buildChart([]);return;}
+      if(!games.length){el.innerHTML='<div class="no-games">no games match your filters</div>';lastGames=[];return;}
       games.sort(function(a,b){return b.score-a.score;});
       games.forEach(function(g,i){g.dotColor=DOT_COLORS[i%DOT_COLORS.length];});
       lastGames=games;renderCards(games,false);
       document.getElementById('games-note').textContent=games.length+' game'+(games.length!==1?'s':'')+' · ranked by elo';
-      buildChart(games);
+      // chart now in matchup map tab
     })
     .catch(function(){el.innerHTML='<div class="no-games">couldn\'t load games</div>';});
 }
@@ -1151,7 +1144,7 @@ function loadRange(){
       games.forEach(function(g,idx){g.dotColor=DOT_COLORS[idx%DOT_COLORS.length];});
       lastGames=games;renderCards(games,true);
       document.getElementById('games-note').textContent=games.length+' games · '+days+' days · ranked by elo';
-      buildChart(games);return;
+      // chart now in matchup map tabreturn;
     }
     el.innerHTML='<div class="loading-sm">'+dates[i]+' ('+(i+1)+'/'+dates.length+')</div>';
     fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates='+dates[i])
@@ -1336,6 +1329,7 @@ function switchTab(tab){
   if(tab==='games'&&!lastGames.length)loadSingle();
   if(tab==='map')buildMapChart();
 }
+
 
 function buildMapChart(){
   if(mapChartInst){mapChartInst.destroy();mapChartInst=null;}
