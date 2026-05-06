@@ -120,7 +120,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .fs{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:11px 12px;margin-bottom:8px}
 .fs-body{overflow:hidden;transition:max-height .2s ease,opacity .2s ease;max-height:600px;opacity:1}
 .fs-body.collapsed,.nest.collapsed{max-height:0!important;opacity:0;pointer-events:none;margin:0;padding:0;border:none;overflow:hidden}
-.nest{overflow:visible}
 .fs-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;transition:margin .2s}
 .fs-body.collapsed+*,.fs-head:has(+.fs-body.collapsed){margin-bottom:0}
 .fs-title{font-family:var(--mono);font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex:1}
@@ -150,7 +149,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 .time-in{font-family:var(--mono);font-size:11px;color:var(--text);background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:3px 6px;width:108px}
 .time-in:disabled{opacity:.35}
 /* nested disabled */
-.nest{margin-top:6px;padding-left:10px;border-left:2px solid var(--border-light);transition:opacity .2s}
+.nest{margin-top:6px;padding-left:10px;border-left:2px solid var(--border-light);transition:max-height .2s ease,opacity .2s;overflow:visible;max-height:600px}
 .nest.off{opacity:.35;pointer-events:none}
 /* network pills (blue when on) */
 .team-bubble{font-family:var(--mono);font-size:10px;padding:3px 8px;border:.5px solid var(--blue);border-radius:20px;cursor:pointer;color:var(--blue);background:var(--blue-light);display:flex;align-items:center;gap:4px}
@@ -192,7 +191,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <header class="site-header">
   <div>
     <div class="site-title">NBA LEAGUE PASS RANKER</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v4.3 · built 2025-05-06</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v4.4 · built 2025-05-06</div>
   </div>
   <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right;line-height:1.6">find the perfect matchups<br/>powered by your picks</div>
 </header>
@@ -391,9 +390,9 @@ input:checked+.tog-track::after{transform:translateX(14px)}
       <div class="fs">
         <div class="fs-head">
           <div class="fs-title">matchup quality</div>
-          <label class="tog"><input type="checkbox" id="w-stars-on" onchange="updateStates()"/><span class="tog-track"></span></label>
+          <label class="tog"><input type="checkbox" id="w-stars-on" checked onchange="updateStates()"/><span class="tog-track"></span></label>
         </div>
-        <div class="nest off" id="stars-nest">
+        <div class="nest" id="stars-nest">
           <!-- Stars: min and max on one row -->
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
             <span style="font-family:var(--mono);font-size:10px;color:var(--text-3);width:36px;flex-shrink:0">game</span>
@@ -673,8 +672,10 @@ var currentDate=new Date();
 function pad(n){return String(n).padStart(2,'0');}
 function dstr(d){return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());}
 function ival(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
-function shiftDate(delta){currentDate.setDate(currentDate.getDate()+delta);document.getElementById('date-picker').value=ival(currentDate);}
-function goToday(){currentDate=new Date();document.getElementById('date-picker').value=ival(currentDate);}
+function shiftDate(delta){currentDate.setDate(currentDate.getDate()+delta);document.getElementById('date-picker').value=ival(currentDate);
+loadSingle();}
+function goToday(){currentDate=new Date();document.getElementById('date-picker').value=ival(currentDate);
+loadSingle();}
 
 // ── TZ ──────────────────────────────────────────────
 function tzOff(tz){var d=new Date(),dst=d.getMonth()>=2&&d.getMonth()<=10;return({ET:-5,CT:-6,MT:-7,PT:-8}[tz]||-5)+(dst?1:0);}
@@ -784,7 +785,7 @@ function resetFilters(){
   document.getElementById('w-game1').value=100;
   document.getElementById('w-game7').value=200;
   document.getElementById('w-sweep').value=-500;
-  document.getElementById('w-stars-on').checked=false;
+  document.getElementById('w-stars-on').checked=true;
   setStarPicker('stars-min-picker',1);
   setStarPicker('stars-max-picker',5);
   setDotPicker('dots-min-picker',1);
@@ -1473,6 +1474,7 @@ function renderTeamBubbles(){
 }
 populateTeamDropdowns();
 document.getElementById('date-picker').value=ival(currentDate);
+loadSingle();
 // Default: date/time ON with today
 document.getElementById('w-dt-on').checked=true;
 // Pre-fill range dates
