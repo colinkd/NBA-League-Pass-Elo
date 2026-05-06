@@ -184,7 +184,10 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <body>
 <div class="page">
 <header class="site-header">
-  <div class="site-title">NBA LEAGUE PASS RANKER</div>
+  <div>
+    <div class="site-title">NBA LEAGUE PASS RANKER</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v3.8 · built 2025-05-05</div>
+  </div>
   <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right;line-height:1.6">find the perfect matchups<br/>powered by your picks</div>
 </header>
 <div class="tabs">
@@ -973,6 +976,11 @@ function processEvent(ev,tz){
       summaryGameNum:typeof summaryGameNum!=='undefined'?summaryGameNum:null,
       serSummary:comp.series?(comp.series.summary||'NONE'):'no series',
       serTitle:comp.series?(comp.series.title||'NONE'):'',
+      serType:comp.series?(comp.series.type||''):'',
+      serCompleted:comp.series?(comp.series.completed||''):'',
+      evNotes:JSON.stringify((comp.notes||[]).slice(0,2)),
+      evSeriesStatus:JSON.stringify(ev.seriesStatus||'none'),
+      statusPeriod:comp.status?comp.status.period:'',
       statusName:(comp.status&&comp.status.type)?comp.status.type.name:'',
       done:typeof done!=='undefined'?done:null
     },
@@ -1052,7 +1060,10 @@ function renderCards(games,showDate){
         '<div style="font-family:var(--mono);font-size:10px;color:var(--amber);text-align:center;font-weight:600">game '+g.gameNum+'</div>'+
         '<div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:center;margin-top:1px">currently</div>'+
         '<div style="font-family:var(--mono);font-size:11px;color:var(--text-2);text-align:center;font-weight:500">'+scoreLine+'</div>'+
-        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center;margin-top:2px">dbg: raw='+dbg.rawAW+'-'+dbg.rawHW+' sum='+dbg.summaryGameNum+' ser='+dbg.serSummary+' st='+dbg.statusName+'</div>'+
+        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center;margin-top:2px">raw='+dbg.rawAW+'-'+dbg.rawHW+' sum='+dbg.summaryGameNum+'</div>'+
+        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center">ser='+dbg.serSummary+' title='+dbg.serTitle+'</div>'+
+        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center">notes='+dbg.evNotes+'</div>'+
+        '<div style="font-family:var(--mono);font-size:8px;color:#888;text-align:center">serStatus='+dbg.evSeriesStatus+'</div>'+
         '</div>';
     }
     return'<div class="game-card">'+
