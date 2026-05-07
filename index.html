@@ -191,7 +191,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <header class="site-header">
   <div>
     <div class="site-title">NBA GAME RANKER</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v4.6 · built 2025-05-07</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v4.7 · built 2025-05-07</div>
   </div>
   <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right;line-height:1.6">find the perfect matchups<br/>powered by your picks</div>
 </header>
@@ -1193,7 +1193,7 @@ function buildChart(games){
   document.getElementById('chart-legend').innerHTML=games.map(function(g,i){
     return'<div class="leg-item"><span class="leg-dot" style="background:'+g.dotColor+'"></span>'+(i+1)+'. '+g.awayAbbr+' @ '+g.homeAbbr+'</div>';
   }).join('');
-  var AMIN=600,AMAX=1550,MED=1200,RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
+  var AMIN=800,AMAX=1550,MED=1200,RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
   var qb=[RMIN+RR*0.2,RMIN+RR*0.4,RMIN+RR*0.6,RMIN+RR*0.8];
   function lpts(S){
     // Find where the diagonal line y=S-x intersects the chart bounds
@@ -1278,7 +1278,7 @@ function buildChart(games){
           }
           var g=games[c.datasetIndex];
           if(!g)return'';
-          return g.awayAbbr+' @ '+g.homeAbbr+' ('+c.parsed.x+'/'+c.parsed.y+')';
+          return [g.awayAbbr+' @ '+g.homeAbbr,g.dateLabel+' · '+g.time,g.watch,'combined elo: '+(g.awayElo+g.homeElo)];
         }}}},
       scales:{
         x:{type:'linear',min:AMIN,max:CHART_MAX,
@@ -1364,7 +1364,7 @@ function buildMapChart(){
   document.getElementById('map-content').style.display=lastGames.length?'block':'none';
   if(!lastGames.length)return;
   var cvs=document.getElementById('map-canvas');
-  var AMIN=600,MED=1200,RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
+  var AMIN=800,MED=1200,RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
   var CHART_MAX=1700;
   var qb=[RMIN+RR*0.2,RMIN+RR*0.4,RMIN+RR*0.6,RMIN+RR*0.8];
   function lpts(S){
@@ -1411,7 +1411,16 @@ function buildMapChart(){
       plugins:{legend:{display:false},tooltip:{enabled:true,callbacks:{label:function(c){
         var lbl=c.dataset.label||'';
         if(lbl.indexOf('bonus:')===0){var gi=+lbl.replace('bonus:','');var al=arrowLabels.find(function(a){return a.gameIdx===gi;});return al?al.label:'bonus';}
-        return lbl||'';
+        if(!lbl||lbl==='_')return'';
+        // lbl is "N. AWAY @ HOME" — find game by index
+        var gi=c.datasetIndex;var g=lastGames[gi];
+        if(!g)return lbl;
+        return [
+          g.awayAbbr+' @ '+g.homeAbbr,
+          g.dateLabel+' · '+g.time,
+          g.watch,
+          'combined elo: '+(g.awayElo+g.homeElo)
+        ];
       }}}},
       scales:{
         x:{type:'linear',min:AMIN,max:CHART_MAX,title:{display:true,text:'away elo',color:'#888780',font:{size:14,family:'DM Mono, monospace'}},grid:{color:'rgba(180,178,169,0.4)'},ticks:{color:'#888780',font:{size:13,family:'DM Mono, monospace'},maxTicksLimit:8}},
