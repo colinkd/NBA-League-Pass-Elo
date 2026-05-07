@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NBA League Pass Ranker</title>
+<title>NBA Game Ranker</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏀</text></svg>"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
@@ -190,8 +190,8 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <div class="page">
 <header class="site-header">
   <div>
-    <div class="site-title">NBA LEAGUE PASS RANKER</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v4.4 · built 2025-05-06</div>
+    <div class="site-title">NBA GAME RANKER</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:3px;letter-spacing:.3px">v4.6 · built 2025-05-07</div>
   </div>
   <div style="font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right;line-height:1.6">find the perfect matchups<br/>powered by your picks</div>
 </header>
@@ -459,8 +459,7 @@ input:checked+.tog-track::after{transform:translateX(14px)}
 <div id="view-map" style="display:none">
   <div id="map-nogames" style="font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:center;padding:3rem 0">load games first, then come back here</div>
   <div id="map-content" style="display:none">
-    <div style="background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:20px;max-width:67%;margin:0 auto">
-      <div class="chart-title" style="margin-bottom:14px;font-size:13px">matchup map</div>
+    <div style="background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:16px 20px 20px;max-width:67%;margin:0 auto">
       <canvas id="map-canvas"></canvas>
       <div class="chart-legend" id="map-legend" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:5px 14px"></div>
     </div>
@@ -1194,7 +1193,7 @@ function buildChart(games){
   document.getElementById('chart-legend').innerHTML=games.map(function(g,i){
     return'<div class="leg-item"><span class="leg-dot" style="background:'+g.dotColor+'"></span>'+(i+1)+'. '+g.awayAbbr+' @ '+g.homeAbbr+'</div>';
   }).join('');
-  var AMIN=900,AMAX=1550,MED=1200,RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
+  var AMIN=600,AMAX=1550,MED=1200,RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
   var qb=[RMIN+RR*0.2,RMIN+RR*0.4,RMIN+RR*0.6,RMIN+RR*0.8];
   function lpts(S){
     // Find where the diagonal line y=S-x intersects the chart bounds
@@ -1267,7 +1266,7 @@ function buildChart(games){
     type:'scatter',data:{datasets:dots.concat(lines)},
     options:{
       responsive:true,
-      aspectRatio:1,
+      aspectRatio:1.09,
       plugins:{legend:{display:false},tooltip:{
         enabled:true,
         callbacks:{label:function(c){
@@ -1365,7 +1364,7 @@ function buildMapChart(){
   document.getElementById('map-content').style.display=lastGames.length?'block':'none';
   if(!lastGames.length)return;
   var cvs=document.getElementById('map-canvas');
-  var AMIN=900,MED=1200,RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
+  var AMIN=600,MED=1200,RMIN=1920,RMAX=2931,RR=RMAX-RMIN;
   var CHART_MAX=1700;
   var qb=[RMIN+RR*0.2,RMIN+RR*0.4,RMIN+RR*0.6,RMIN+RR*0.8];
   function lpts(S){
@@ -1408,7 +1407,7 @@ function buildMapChart(){
   mapChartInst=new Chart(cvs,{
     type:'scatter',data:{datasets:dots.concat(lines)},
     options:{
-      responsive:true,aspectRatio:1,
+      responsive:true,aspectRatio:1.09,
       plugins:{legend:{display:false},tooltip:{enabled:true,callbacks:{label:function(c){
         var lbl=c.dataset.label||'';
         if(lbl.indexOf('bonus:')===0){var gi=+lbl.replace('bonus:','');var al=arrowLabels.find(function(a){return a.gameIdx===gi;});return al?al.label:'bonus';}
